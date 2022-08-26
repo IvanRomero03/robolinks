@@ -9,9 +9,22 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chakra-ui/react": "^2.2.9",
+    "@emotion/react": "^11.10.0",
+    "@emotion/styled": "^11.10.0",
+    "@prisma/client": "^4.2.1",
+    "@tanstack/react-query": "^4.2.3",
+    "@types/next": "^9.0.0",
+    "@types/node": "^18.7.13",
+    "@types/react": "^18.0.17",
+    "axios": "^0.27.2",
+    "formik": "^2.2.9",
+    "framer-motion": "^6.5.1",
     "next": "12.2.5",
+    "prisma": "^4.2.1",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "eslint": "8.22.0",

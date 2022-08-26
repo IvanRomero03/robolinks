@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Link {
+  idLink      Int        @id @default(autoincrement())
+  idUser      Int
+  title       String
+  description String
+  url         String
+  picUrl      String
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime
+  User        User       @relation(fields: [idUser], references: [idUser])
+  LinkTags    LinkTags[]
+
+  @@index([idUser], map: "Link_idUser_fkey")
+}
+
+model LinkTags {
+  idLinkTags Int  @id @default(autoincrement())
+  idLink     Int
+  idTag      Int
+  Link       Link @relation(fields: [idLink], references: [idLink])
+  Tag        Tag  @relation(fields: [idTag], references: [idTag])
+
+  @@index([idLink], map: "LinkTags_idLink_fkey")
+  @@index([idTag], map: "LinkTags_idTag_fkey")
+}
+
+model Tag {
+  idTag    Int        @id @default(autoincrement())
+  tagName  String     @unique
+  tagColor String
+  LinkTags LinkTags[]
+}
+
+model User {
+  idUser    Int      @id @default(autoincrement())
+  username  String   @unique
+  email     String   @unique
+  password  String
+  picUrl    String
+  createdAt DateTime @default(now())
+  Link      Link[]
+}

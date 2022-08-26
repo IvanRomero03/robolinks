@@ -22,22 +22,26 @@ export const TopNavBar = ({
     // Flex to top
     <>
       <Flex
-        w="100%"
+        minW="100%"
         align={"center"}
         wrap="wrap"
         padding={"1.5rem"}
         justify="space-between"
         background={"gray.700"}
         position="fixed"
+        backdropBlur={"sm"}
+        opacity={0.9}
+        zIndex={1}
       >
         <a href="http://github.com/RoBorregos">
           <Image
             src={"http://github.com/RoBorregos.png"}
             alt="logo"
             boxSize="50px"
+            opacity={1.5}
           />
         </a>
-        <Heading>RoboLinks</Heading>
+        <Heading opacity={1}>RoboLinks</Heading>
         <TopRight picUrl={picUrl} />
       </Flex>
     </>

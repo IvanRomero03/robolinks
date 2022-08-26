@@ -4,6 +4,7 @@ cd proy-name
 
 # install dependencies of the Tech Stack
 npm i @chakra-ui/react @emotion/react@^11 @emotion/styled@^11 framer-motion@^6
+npm i @chakra-ui/icons  // PELIGROSON
 npm i @types/react @types/next @types/node 
 npm i @tanstack/react-query formik yup prisma axios
 

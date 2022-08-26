@@ -13,8 +13,14 @@ const getLink = async (req: NextApiRequest, res: NextApiResponse) => {
     where: {
       idLink: Number(idLink),
     },
-    include: {
-      Tag: true,
+    select: {
+      Tag: {
+        select: {
+          idTag: true,
+          tagName: true,
+          tagColor: true,
+        },
+      },
     },
   });
   const linkWithTags = {

@@ -25,6 +25,7 @@ export const LinkComponent = ({ idLink }) => {
   return (
     <>
       <Box
+        minW="350px"
         maxW={"350px"}
         w={"full"}
         //bg={"teal.800"}

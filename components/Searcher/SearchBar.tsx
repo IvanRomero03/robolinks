@@ -47,8 +47,8 @@ const SearchBar = ({ setSearch, setTags, search }) => {
           <Input
             focusBorderColor="blue.500"
             placeholder="Search"
-            onChange={(e) => {
-              setSearch(e.target.value);
+            onChange={async (e) => {
+              await setSearch(e.target.value);
               handleSearch();
             }}
           />

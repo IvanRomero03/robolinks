@@ -1,4 +1,4 @@
-import { Spinner, Stack } from "@chakra-ui/react";
+import { Spinner, Stack, VStack, Text, HStack } from "@chakra-ui/react";
 import React from "react";
 import { LinkComponent } from "./LinkComponent";
 import { useQuery } from "@tanstack/react-query";
@@ -13,14 +13,32 @@ const LinkStack = ({ search, tags }) => {
   );
   console.log("LinkStack", isFetching);
   console.log(data);
+  const chunk = (arr, size) =>
+    Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>
+      arr.slice(i * size, i * size + size)
+    );
+  const chunkedData = chunk(data?.data, 3);
+
   return (
-    <Stack m="2%" spacing={8}>
-      {isLoading ? (
-        <Spinner />
-      ) : (
-        data.data?.map((link) => <LinkComponent idLink={link.idLink} />)
-      )}
-    </Stack>
+    <>
+      <VStack>
+        {isLoading ? (
+          <Spinner />
+        ) : isError ? (
+          <Text>Error</Text>
+        ) : (
+          <>
+            {chunkedData.map((chunk, index) => (
+              <HStack key={index}>
+                {chunk.map((link) => (
+                  <LinkComponent key={link.idLink} idLink={link.idLink} />
+                ))}
+              </HStack>
+            ))}
+          </>
+        )}
+      </VStack>
+    </>
   );
 };
 

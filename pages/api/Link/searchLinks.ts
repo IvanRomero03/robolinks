@@ -1,6 +1,7 @@
 import { prisma } from "../_db";
 import { NextApiRequest, NextApiResponse } from "next";
 
+// TODO make search with tags a intersection of tags and search results
 const searchLinks = async (req: NextApiRequest, res: NextApiResponse) => {
   const { search, tags } = req.body;
   if (!tags || tags.length === 0) {
@@ -85,15 +86,19 @@ const searchLinks = async (req: NextApiRequest, res: NextApiResponse) => {
             },
           },
         ],
-        LinkTags: {
-          some: {
-            Tag: {
-              idTag: {
-                in: tags,
+        AND: [
+          {
+            LinkTags: {
+              some: {
+                Tag: {
+                  idTag: {
+                    in: tags,
+                  },
+                },
               },
             },
           },
-        },
+        ],
       },
       select: {
         idLink: true,

@@ -18,10 +18,10 @@ import { useQuery } from "@tanstack/react-query";
 import client from "../../client";
 
 export const LinkComponent = ({ idLink }) => {
-  const { data, isLoading, isError } = useQuery(["link" + "idLink"], () =>
+  const { data, isLoading, isError } = useQuery(["link" + idLink], () =>
     client.get(`Link/getLink?idLink=${idLink}`)
   );
-  console.log(data?.data);
+  //console.log(data?.data);
   return (
     <>
       <Box
@@ -29,7 +29,7 @@ export const LinkComponent = ({ idLink }) => {
         w={"full"}
         //bg={"teal.800"}
         backdropBlur={"sm"}
-        boxShadow={"2xl"}
+        boxShadow={"md"}
         rounded={"md"}
         overflow={"hidden"}
         borderWidth={2}

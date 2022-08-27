@@ -53,18 +53,8 @@ const searchLinkWithTags = async (
         },
       },
     },
-    include: {
-      LinkTags: {
-        select: {
-          Tag: {
-            select: {
-              idTag: true,
-              tagName: true,
-              tagColor: true,
-            },
-          },
-        },
-      },
+    select: {
+      idLink: true,
     },
   });
   res.status(200).json(links);

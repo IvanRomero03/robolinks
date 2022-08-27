@@ -41,18 +41,8 @@ const searchLink = async (req: NextApiRequest, res: NextApiResponse) => {
         },
       ],
     },
-    include: {
-      LinkTags: {
-        select: {
-          Tag: {
-            select: {
-              idTag: true,
-              tagName: true,
-              tagColor: true,
-            },
-          },
-        },
-      },
+    select: {
+      idLink: true,
     },
   });
   res.status(200).json(links);

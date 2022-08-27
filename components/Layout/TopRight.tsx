@@ -8,23 +8,32 @@ import {
   MenuItem,
   Text,
   Button,
+  Avatar,
 } from "@chakra-ui/react";
 import { HamburgerIcon } from "@chakra-ui/icons";
+import { ColorModeSwitcher } from "../ColorModeSwitcher";
+type props = {
+  picUrl: string;
+  username?: string;
+};
 
-export const TopRight = ({ picUrl = "http://github.com/RoBorregos.png" }) => {
+export const TopRight = ({
+  picUrl = "http://github.com/RoBorregos.png",
+  username,
+}: props) => {
   return (
     <>
       <HStack spacing={4}>
-        <Image
-          src={picUrl}
-          alt="logo"
-          boxSize="50px"
-          borderRadius={"50%"}
-          opacity={1}
-        />
+        <Avatar src={picUrl} name={username ?? ""} />
+        <ColorModeSwitcher />
         <Menu>
           <MenuButton>
-            <IconButton icon={<HamburgerIcon />} aria-label="Menu" />
+            <IconButton
+              icon={<HamburgerIcon />}
+              aria-label="Menu"
+              variant="ghost"
+              color="white"
+            />
           </MenuButton>
           <MenuList>
             <MenuItem>

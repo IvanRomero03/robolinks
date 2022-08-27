@@ -8,18 +8,21 @@ import {
   Text,
   Heading,
   VStack,
+  Link,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import React, { useState, useEffect } from "react";
 import { TopRight } from "./TopRight";
+import { theme } from "../../styles/theme";
+import { useColorMode } from "@chakra-ui/react";
 
 export const TopNavBar = ({
   picUrl = "http://github.com/IvanRomero03.png",
 }) => {
   const router = useRouter();
+  const { colorMode } = useColorMode();
 
   return (
-    // Flex to top
     <>
       <Flex
         minW="100%"
@@ -33,15 +36,18 @@ export const TopNavBar = ({
         opacity={0.9}
         zIndex={1}
       >
-        <a href="http://github.com/RoBorregos">
+        <Link href="http://github.com/RoBorregos" isExternal>
           <Image
-            src={"http://github.com/RoBorregos.png"}
+            //src={colorMode == "dark" ? "Logo_blanco.png" : "Logo_negro.png"}
+            src={"Logo_blanco.png"}
             alt="logo"
-            boxSize="50px"
+            maxH={"65px"}
             opacity={1.5}
           />
-        </a>
-        <Heading opacity={1}>RoboLinks</Heading>
+        </Link>
+        <Heading opacity={1} color={"white"}>
+          RoboLinks
+        </Heading>
         <TopRight picUrl={picUrl} />
       </Flex>
     </>

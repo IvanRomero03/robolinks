@@ -13,46 +13,55 @@ import {
   Center,
   Text,
   IconButton,
+  Modal,
+  ModalOverlay,
 } from "@chakra-ui/react";
 import { SearchMode, SearchModeEnum } from "../../types/SearchMode";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import client from "../../client";
 import { AddIcon, CheckIcon, CloseIcon } from "@chakra-ui/icons";
+import EditForm from "../Link/EditForm";
+import { useDisclosure } from "@chakra-ui/react";
 
 const SearchBar = ({ setSearch, setTags, search }) => {
   const queryClient = useQueryClient();
   const [selectedTags, setSelectedTags] = useState(new Set() as Set<number>);
   const [isSelected, setIsSelected] = useState({});
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const { data, isLoading, error } = useQuery(["tags"], () =>
     client.get("/Tag/getTags")
   );
-  const handleSearch = () => {
+  const handleSearch = (Search = search, tags = Array.from(selectedTags)) => {
     queryClient.fetchQuery(["links"], () =>
       client.post("/Link/searchLinks", {
-        search: search,
-        tags: Array.from(selectedTags),
+        search: Search,
+        tags: tags,
       })
     );
   };
   return (
     <>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <EditForm onClose={onClose} onSubmit={() => {}} />
+      </Modal>
       <Box>
         <HStack>
           <IconButton
             aria-label="Add new Link"
             icon={<AddIcon />}
-            onClick={() => {}}
+            onClick={onOpen}
           />
           <Input
             focusBorderColor="blue.500"
             placeholder="Search"
             onChange={async (e) => {
               await setSearch(e.target.value);
-              handleSearch();
+              handleSearch(e.target.value);
             }}
           />
-          <Button onClick={handleSearch}>Search</Button>
+          <Button onClick={() => handleSearch()}>Search</Button>
           <Menu>
             <MenuButton>
               <Button>
@@ -69,6 +78,7 @@ const SearchBar = ({ setSearch, setTags, search }) => {
                       selectedTags.add(tag.idTag);
                       setSelectedTags(selectedTags);
                       setTags(Array.from(selectedTags));
+                      handleSearch(search, Array.from(selectedTags));
                     }}
                   >
                     <HStack justify={"space-between"}>
@@ -93,6 +103,7 @@ const SearchBar = ({ setSearch, setTags, search }) => {
                     selectedTags.delete(tagData.idTag);
                     setSelectedTags(selectedTags);
                     setTags(Array.from(selectedTags));
+                    handleSearch(search, Array.from(selectedTags));
                   }}
                   cursor={"pointer"}
                 >

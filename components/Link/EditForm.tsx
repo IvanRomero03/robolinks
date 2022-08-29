@@ -39,6 +39,7 @@ const EditForm = ({ idLink, onClose, onSubmit }: props) => {
   const [isSelected, setIsSelected] = useState({});
 
   const tagsQuery = useQuery(["tags"], () => client.get("/Tag/getTags"));
+  console.log(tagsQuery.data);
 
   const { data, isLoading, isError, isFetching } = useQuery(
     ["link" + idLink],
@@ -140,13 +141,12 @@ const EditForm = ({ idLink, onClose, onSubmit }: props) => {
                       Add Tag
                     </Button>
                     <Menu>
-                      <MenuButton>
-                        <Button>
-                          <Badge colorScheme={"green"}>Tags</Badge>
-                        </Button>
+                      <MenuButton type="button">
+                        <Badge colorScheme={"green"}>Tags</Badge>
                       </MenuButton>
                       <MenuList>
                         {tagsQuery?.data?.data?.map((tag) => {
+                          console.log(tag);
                           return (
                             <MenuItem
                               key={tag.idTag}

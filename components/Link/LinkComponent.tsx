@@ -32,6 +32,7 @@ export const LinkComponent = ({ idLink }) => {
     {
       onSuccess: () => {
         queryClient.invalidateQueries(["link" + idLink]);
+        queryClient.invalidateQueries(["links"]);
       },
     }
   );

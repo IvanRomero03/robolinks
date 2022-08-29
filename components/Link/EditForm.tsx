@@ -22,14 +22,23 @@ import {
   Center,
   FormControl,
   FormHelperText,
+  Popover,
+  PopoverTrigger,
+  Portal,
+  PopoverContent,
+  PopoverBody,
+  PopoverHeader,
+  PopoverCloseButton,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { Form, Formik, Field, yupToFormErrors } from "formik";
 import * as Yup from "yup";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import client from "../../client";
-import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
+import { AddIcon, CheckIcon, CloseIcon } from "@chakra-ui/icons";
 import { useEffect, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
+import CreateTag from "./CreateTag";
 
 type props = {
   idLink?: number;
@@ -38,9 +47,10 @@ type props = {
 };
 
 const EditForm = ({ idLink, onClose, onSubmit }: props) => {
+  const createTagDisclosure = useDisclosure();
+
   const supabaseLink = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY;
-  console.log(supabaseLink, supabaseKey);
   const supabase = createClient(supabaseLink, supabaseKey);
   const [selectedTags, setSelectedTags] = useState(new Set() as Set<number>);
   const [isSelected, setIsSelected] = useState({});
@@ -91,7 +101,6 @@ const EditForm = ({ idLink, onClose, onSubmit }: props) => {
               const supabaseImagesNumber = await supabase.storage
                 .from("imagenes")
                 .list("RoboLinks");
-              console.log(supabaseImagesNumber);
               const num = supabaseImagesNumber?.data?.length ?? 0;
               supabase.storage
                 .from("imagenes")
@@ -111,191 +120,196 @@ const EditForm = ({ idLink, onClose, onSubmit }: props) => {
           }}
         >
           {({ values, setFieldValue, isSubmitting, errors, touched }) => (
-            console.log(errors),
-            (
-              <Form>
-                <VStack minW="100%" w="90%" alignItems={"flex-start"}>
-                  <HStack justify={"space-between"} m="2.5%" w="30%">
-                    <VStack
-                      w="100%"
-                      h="100%"
-                      justify={"space-between"}
-                      align={"flex-start"}
-                      mr="2%"
+            <Form>
+              <VStack minW="100%" w="90%" alignItems={"flex-start"}>
+                <HStack justify={"space-between"} m="2.5%" w="30%">
+                  <VStack
+                    w="100%"
+                    h="100%"
+                    justify={"space-between"}
+                    align={"flex-start"}
+                    mr="2%"
+                  >
+                    <Image
+                      src={
+                        values?.picUrl ?? "" //if picUrl is null, then show a default image
+                      }
+                      alt="logo"
+                      boxSize="150px"
+                      borderRadius={"10%"}
+                      shadow={"outline"}
+                    />
+                    <Field
+                      name="picUrl"
+                      as={Input}
+                      placeholder="Image Url"
+                      onChange={(e) => {
+                        setFieldValue("picUrl", e.target.value);
+                      }}
+                    />
+                    <input
+                      type="file"
+                      name="file"
+                      accept="image/*"
+                      onChange={async (e) => {
+                        const file = e.target.files[0];
+                        const reader = new FileReader();
+                        reader.readAsDataURL(file);
+                        reader.onloadend = async () => {
+                          setFieldValue("picUrl", reader.result);
+                        };
+                      }}
+                    />
+                  </VStack>
+                  <VStack minW="210%" h="100%" alignItems={"self-start"}>
+                    <HStack w="100%" justify={"space-between"}>
+                      <Code>
+                        <Heading size="md">Title</Heading>
+                      </Code>
+                      <IconButton
+                        aria-label="Close"
+                        icon={<CloseIcon />}
+                        onClick={onClose}
+                      />
+                    </HStack>
+                    <FormControl
+                      isInvalid={Boolean(!!errors.title && touched.title)}
                     >
-                      <Image
-                        src={
-                          values?.picUrl ?? "" //if picUrl is null, then show a default image
-                        }
-                        alt="logo"
-                        boxSize="150px"
-                        borderRadius={"10%"}
-                        shadow={"outline"}
-                      />
                       <Field
-                        name="picUrl"
+                        name="title"
                         as={Input}
-                        placeholder="Image Url"
-                        onChange={(e) => {
-                          setFieldValue("picUrl", e.target.value);
-                        }}
+                        placeholder="Title"
+                        required
                       />
-                      <input
-                        type="file"
-                        name="file"
-                        accept="image/*"
-                        onChange={async (e) => {
-                          const file = e.target.files[0];
-                          const reader = new FileReader();
-                          reader.readAsDataURL(file);
-                          reader.onloadend = async () => {
-                            setFieldValue("picUrl", reader.result);
-                          };
-                        }}
+                      <FormHelperText>
+                        {errors.title &&
+                          touched.title &&
+                          errors?.title.toString()}
+                      </FormHelperText>
+                    </FormControl>
+                    <Code>
+                      <Heading size="md">Url</Heading>
+                    </Code>
+                    <FormControl
+                      isInvalid={Boolean(!!errors.url && touched.url)}
+                    >
+                      <Field name="url" as={Input} placeholder="Url" required />
+                      <FormHelperText>
+                        {errors.url && touched.url && errors?.url.toString()}
+                      </FormHelperText>
+                    </FormControl>
+                    <Code>
+                      <Heading size="md">Description</Heading>
+                    </Code>
+                    <FormControl
+                      isInvalid={Boolean(
+                        !!errors.description && touched.description
+                      )}
+                    >
+                      <Field
+                        name="description"
+                        as={Textarea}
+                        placeholder="Description"
+                        required
                       />
-                    </VStack>
-                    <VStack minW="210%" h="100%" alignItems={"self-start"}>
-                      <HStack w="100%" justify={"space-between"}>
-                        <Code>
-                          <Heading size="md">Title</Heading>
-                        </Code>
-                        <IconButton
-                          aria-label="Close"
-                          icon={<CloseIcon />}
-                          onClick={onClose}
-                        />
-                      </HStack>
-                      <FormControl
-                        isInvalid={Boolean(!!errors.title && touched.title)}
-                      >
-                        <Field
-                          name="title"
-                          as={Input}
-                          placeholder="Title"
-                          required
-                        />
-                        <FormHelperText>
-                          {errors.title &&
-                            touched.title &&
-                            errors?.title.toString()}
-                        </FormHelperText>
-                      </FormControl>
-                      <Code>
-                        <Heading size="md">Url</Heading>
-                      </Code>
-                      <FormControl
-                        isInvalid={Boolean(!!errors.url && touched.url)}
-                      >
-                        <Field
-                          name="url"
-                          as={Input}
-                          placeholder="Url"
-                          required
-                        />
-                        <FormHelperText>
-                          {errors.url && touched.url && errors?.url.toString()}
-                        </FormHelperText>
-                      </FormControl>
-                      <Code>
-                        <Heading size="md">Description</Heading>
-                      </Code>
-                      <FormControl
-                        isInvalid={Boolean(
-                          !!errors.description && touched.description
-                        )}
-                      >
-                        <Field
-                          name="description"
-                          as={Textarea}
-                          placeholder="Description"
-                          required
-                        />
-                        <FormHelperText>
-                          {errors.description &&
-                            touched.description &&
-                            errors?.description.toString()}
-                        </FormHelperText>
-                      </FormControl>
-                      <HStack maxW="90%">
-                        <Menu>
-                          <MenuButton type="button">
-                            <Badge colorScheme={"green"}>Tags</Badge>
-                          </MenuButton>
-                          <MenuList>
-                            {tagsQuery?.data?.data?.map((tag) => {
-                              return (
-                                <MenuItem
-                                  key={tag.idTag}
-                                  onClick={() => {
-                                    setIsSelected({
-                                      ...isSelected,
-                                      [tag.idTag]: true,
-                                    });
-                                    selectedTags.add(tag.idTag);
-                                    setSelectedTags(selectedTags);
-                                  }}
-                                >
-                                  <HStack justify={"space-between"}>
-                                    <Badge colorScheme={tag.tagColor}>
-                                      {tag.tagName}
-                                    </Badge>
-                                    <Spacer />
-                                    {isSelected[tag.idTag] ? (
-                                      <CheckIcon />
-                                    ) : null}
-                                  </HStack>
-                                </MenuItem>
-                              );
-                            })}
-                          </MenuList>
-                        </Menu>
-
-                        <HStack>
-                          {Array.from(selectedTags).map((tag) => {
-                            const tagData = tagsQuery?.data?.data?.find(
-                              (t) => t.idTag === tag
-                            );
+                      <FormHelperText>
+                        {errors.description &&
+                          touched.description &&
+                          errors?.description.toString()}
+                      </FormHelperText>
+                    </FormControl>
+                    <HStack maxW="90%">
+                      <Menu>
+                        <MenuButton type="button">
+                          <Badge colorScheme={"green"}>Tags</Badge>
+                        </MenuButton>
+                        <MenuList>
+                          {tagsQuery?.data?.data?.map((tag) => {
                             return (
-                              <Badge
-                                key={tagData.idTag}
-                                colorScheme={tagData.tagColor}
+                              <MenuItem
+                                key={tag.idTag}
                                 onClick={() => {
                                   setIsSelected({
                                     ...isSelected,
-                                    [tagData.idTag]: false,
+                                    [tag.idTag]: true,
                                   });
-                                  selectedTags.delete(tagData.idTag);
+                                  selectedTags.add(tag.idTag);
                                   setSelectedTags(selectedTags);
                                 }}
-                                cursor={"pointer"}
                               >
-                                <HStack>
-                                  <Text>{tagData.tagName}</Text>
-                                  <Center>
-                                    <CloseIcon />
-                                  </Center>
+                                <HStack justify={"space-between"}>
+                                  <Badge colorScheme={tag.tagColor}>
+                                    {tag.tagName}
+                                  </Badge>
+                                  <Spacer />
+                                  {isSelected[tag.idTag] ? <CheckIcon /> : null}
                                 </HStack>
-                              </Badge>
+                              </MenuItem>
                             );
                           })}
-                        </HStack>
+                        </MenuList>
+                      </Menu>
+                      <Popover isOpen={createTagDisclosure.isOpen}>
+                        <PopoverTrigger>
+                          <IconButton
+                            aria-label="Create tag"
+                            icon={<AddIcon />}
+                            onClick={createTagDisclosure.onOpen}
+                          />
+                        </PopoverTrigger>
+                        <PopoverContent>
+                          <PopoverHeader>Create tag</PopoverHeader>
+                          <PopoverCloseButton />
+                          <PopoverBody>
+                            <CreateTag onClose={createTagDisclosure.onClose} />
+                          </PopoverBody>
+                        </PopoverContent>
+                      </Popover>
+                      <HStack>
+                        {Array.from(selectedTags).map((tag) => {
+                          const tagData = tagsQuery?.data?.data?.find(
+                            (t) => t.idTag === tag
+                          );
+                          return (
+                            <Badge
+                              key={tagData?.idTag}
+                              colorScheme={tagData?.tagColor}
+                              onClick={() => {
+                                setIsSelected({
+                                  ...isSelected,
+                                  [tagData.idTag]: false,
+                                });
+                                selectedTags.delete(tagData.idTag);
+                                setSelectedTags(selectedTags);
+                              }}
+                              cursor={"pointer"}
+                            >
+                              <HStack>
+                                <Text>{tagData.tagName}</Text>
+                                <Center>
+                                  <CloseIcon />
+                                </Center>
+                              </HStack>
+                            </Badge>
+                          );
+                        })}
                       </HStack>
-                    </VStack>
-                  </HStack>
+                    </HStack>
+                  </VStack>
+                </HStack>
 
-                  <HStack minW="100%" m="3%">
-                    <Button
-                      type="submit"
-                      colorScheme={"blue"}
-                      isLoading={isSubmitting}
-                    >
-                      Submit
-                    </Button>{" "}
-                    <Spacer /> <Button onClick={onClose}>Cancel</Button>
-                  </HStack>
-                </VStack>
-              </Form>
-            )
+                <HStack minW="100%" m="3%">
+                  <Button
+                    type="submit"
+                    colorScheme={"blue"}
+                    isLoading={isSubmitting}
+                  >
+                    Submit
+                  </Button>{" "}
+                  <Spacer /> <Button onClick={onClose}>Cancel</Button>
+                </HStack>
+              </VStack>
+            </Form>
           )}
         </Formik>
       </ModalBody>

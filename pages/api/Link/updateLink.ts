@@ -16,6 +16,7 @@ const updateLink = async (req: NextApiRequest, res: NextApiResponse) => {
       title: title,
       picUrl:
         picUrl ?? "https://cdn-icons-png.flaticon.com/512/3541/3541854.png",
+      updatedAt: new Date(),
     },
   });
 

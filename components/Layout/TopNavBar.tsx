@@ -9,6 +9,7 @@ import {
   Heading,
   VStack,
   Link,
+  HStack,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import React, { useState, useEffect } from "react";
@@ -36,19 +37,23 @@ export const TopNavBar = ({
         opacity={0.9}
         zIndex={1}
       >
-        <Link href="http://github.com/RoBorregos" isExternal>
-          <Image
-            //src={colorMode == "dark" ? "Logo_blanco.png" : "Logo_negro.png"}
-            src={"Logo_blanco.png"}
-            alt="logo"
-            maxH={"65px"}
-            opacity={1.5}
-          />
-        </Link>
-        <Heading opacity={1} color={"white"}>
-          RoboLinks
-        </Heading>
-        <TopRight picUrl={picUrl} />
+        <HStack minW="100%" justify={"space-between"}>
+          <Link href="http://github.com/RoBorregos" isExternal>
+            <Image
+              //src={colorMode == "dark" ? "Logo_blanco.png" : "Logo_negro.png"}
+              src={"Logo_blanco.png"}
+              alt="logo"
+              maxH={"65px"}
+              minH={"65px"}
+              minW={"65px"}
+              opacity={1.5}
+            />
+          </Link>
+          <Heading opacity={1} color={"white"}>
+            RoboLinks
+          </Heading>
+          <TopRight picUrl={picUrl} />
+        </HStack>
       </Flex>
     </>
   );

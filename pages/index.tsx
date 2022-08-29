@@ -26,6 +26,7 @@ import { useQueryClient, useMutation } from "@tanstack/react-query";
 import LinkStack from "../components/Link/linkStack";
 import SearchBar from "../components/Searcher/SearchBar";
 import { Prisma } from "@prisma/client";
+import { isMobile } from "react-device-detect";
 // idea https://excalidraw.com/#json=myQ7PbofUoi1ufoU6SZ65,jLB2YW1xcTTW4qktRK4V1w
 
 export default function Home() {
@@ -38,7 +39,7 @@ export default function Home() {
         <TopNavBar />
         <Container
           minW="100%"
-          padding={"3rem"}
+          padding={isMobile ? "3.5rem" : "3rem"}
           background={"gray.700"}
           backdropBlur={"sm"}
           opacity={0}

@@ -33,5 +33,5 @@ npx prisma generate
 # for supabase:
 npm install @supabase/supabase-js
 ## modify the file .env
-SUPABASE_URL="https://xxxxx.supabase.co"
-SUPABASE_KEY="xxxxx"
+NEXT_PUBLIC_SUPABASE_URL="https://xxxxx.supabase.co"
+NEXT_PUBLIC_SUPABASE_KEY="xxxxx"

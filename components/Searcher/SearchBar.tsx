@@ -42,7 +42,9 @@ const SearchBar = ({ setSearch, setTags, search }) => {
   };
 
   const { mutate } = useMutation(
-    (values) => client.post("/Link/createLink", values),
+    (values) => {
+      return client.post("/Link/createLink", values);
+    },
     {
       onSuccess: () => {
         queryClient.invalidateQueries(["links"]);
@@ -51,7 +53,8 @@ const SearchBar = ({ setSearch, setTags, search }) => {
   );
 
   const handleCreate = (values) => {
-    mutate(values);
+    const m = mutate(values);
+    console.log(m);
   };
 
   return (

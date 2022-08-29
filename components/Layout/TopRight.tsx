@@ -23,7 +23,7 @@ export const TopRight = ({
 }: props) => {
   return (
     <>
-      <HStack spacing={4}>
+      <HStack>
         <Avatar src={picUrl} name={username ?? ""} />
         <ColorModeSwitcher />
         <Menu>

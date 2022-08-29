@@ -3,6 +3,7 @@ import React from "react";
 import { LinkComponent } from "./LinkComponent";
 import { useQuery } from "@tanstack/react-query";
 import client from "../../client";
+import { isMobile } from "react-device-detect";
 
 const LinkStack = ({ search, tags }) => {
   const { data, isLoading, isError, isFetching } = useQuery(["links"], () =>
@@ -16,7 +17,7 @@ const LinkStack = ({ search, tags }) => {
     Array.from({ length: Math.ceil(arr?.length / size) }, (v, i) =>
       arr.slice(i * size, i * size + size)
     );
-  const chunkedData = chunk(data?.data, 3);
+  const chunkedData = chunk(data?.data, isMobile ? 1 : 3);
 
   return (
     <>
@@ -28,7 +29,7 @@ const LinkStack = ({ search, tags }) => {
         ) : (
           <>
             {chunkedData.map((chunk, index) => (
-              <HStack key={index}>
+              <HStack key={index} justify={"left"} w="90%" spacing={16}>
                 {chunk.map((link) => (
                   <LinkComponent key={link.idLink} idLink={link.idLink} />
                 ))}

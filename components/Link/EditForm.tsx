@@ -32,13 +32,13 @@ import { createClient } from "@supabase/supabase-js";
 type props = {
   idLink?: number;
   onClose: () => void;
-  onSubmit: (values: any) => void;
+  onSubmit: (values: any) => any;
 };
 
 const EditForm = ({ idLink, onClose, onSubmit }: props) => {
-  const supabaseLink = "https://bfmvwivyerrefrhrlmxx.supabase.co";
-  const supabaseKey =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJmbXZ3aXZ5ZXJyZWZyaHJsbXh4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2NjE0MzAyMTQsImV4cCI6MTk3NzAwNjIxNH0.qVfVNzYGkQ6s17S-9xW1Lq-ZwTEumsGsNI5yaHUqSWY";
+  const supabaseLink = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY;
+  console.log(supabaseLink, supabaseKey);
   const supabase = createClient(supabaseLink, supabaseKey);
   const [selectedTags, setSelectedTags] = useState(new Set() as Set<number>);
   const [isSelected, setIsSelected] = useState({});
@@ -64,7 +64,7 @@ const EditForm = ({ idLink, onClose, onSubmit }: props) => {
       setSelectedTags(new Set(data?.data?.tags.map((tag) => tag.Tag.idTag)));
     }
   }, [data]);
-
+  // TODO form control with yup validation
   return (
     <ModalContent minW="60%" minH="40%">
       <ModalBody>
@@ -75,7 +75,8 @@ const EditForm = ({ idLink, onClose, onSubmit }: props) => {
               : {
                   title: "",
                   url: "",
-                  picUrl: "",
+                  picUrl:
+                    "https://cdn-icons-png.flaticon.com/512/3541/3541854.png",
                   description: "",
                 }
           }
@@ -95,7 +96,7 @@ const EditForm = ({ idLink, onClose, onSubmit }: props) => {
                 .from("imagenes")
                 .upload("RoboLinks/" + num + ".png", blob);
               values.picUrl =
-                "https://bfmvwivyerrefrhrlmxx.supabase.co" +
+                process.env.NEXT_PUBLIC_SUPABASE_URL +
                 "/storage/v1/object/public/imagenes/RoboLinks/" +
                 num +
                 ".png";
@@ -103,10 +104,11 @@ const EditForm = ({ idLink, onClose, onSubmit }: props) => {
             values.idUser = 1; //TODO change this
             onSubmit(values);
             setSubmitting(false);
+
             onClose();
           }}
         >
-          {({ values, setFieldValue }) => (
+          {({ values, setFieldValue, isSubmitting }) => (
             <Form>
               <VStack minW="100%" w="90%" alignItems={"flex-start"}>
                 <HStack justify={"space-between"} m="2.5%" w="30%">
@@ -238,7 +240,11 @@ const EditForm = ({ idLink, onClose, onSubmit }: props) => {
                 </HStack>
 
                 <HStack minW="100%" m="3%">
-                  <Button type="submit" colorScheme={"blue"}>
+                  <Button
+                    type="submit"
+                    colorScheme={"blue"}
+                    isLoading={isSubmitting}
+                  >
                     Submit
                   </Button>{" "}
                   <Spacer /> <Button onClick={onClose}>Cancel</Button>

@@ -46,7 +46,7 @@ const SearchBar = ({ setSearch, setTags, search }) => {
       return client.post("/Link/createLink", values);
     },
     {
-      onSuccess: () => {
+      onSuccess: (data) => {
         queryClient.invalidateQueries(["links"]);
       },
     }

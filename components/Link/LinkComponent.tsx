@@ -98,8 +98,8 @@ export const LinkComponent = ({ idLink }) => {
               </HStack>
               <HStack mt="2%" mb="2%" alignSelf={"flex-end"}>
                 {data?.data?.tags.map((tag) => (
-                  <Badge key={tag.Tag.idTag} colorScheme={tag.Tag.tagColor}>
-                    {tag.Tag.tagName}
+                  <Badge key={tag?.Tag?.idTag} colorScheme={tag?.Tag?.tagColor}>
+                    {tag?.Tag?.tagName}
                   </Badge>
                 ))}
               </HStack>

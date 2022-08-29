@@ -62,7 +62,7 @@ const EditForm = ({ idLink, onClose, onSubmit }: props) => {
 
   useEffect(() => {
     if (data) {
-      setSelectedTags(new Set(data?.data?.tags.map((tag) => tag.Tag.idTag)));
+      setSelectedTags(new Set(data?.data?.tags.map((tag) => tag?.Tag?.idTag)));
     }
   }, [data]);
   // TODO form control with yup validation
@@ -103,6 +103,7 @@ const EditForm = ({ idLink, onClose, onSubmit }: props) => {
                 ".png";
             }
             values.idUser = 1; //TODO change this
+            values.tags = Array.from(selectedTags);
             onSubmit(values);
             setSubmitting(false);
 

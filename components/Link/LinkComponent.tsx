@@ -17,10 +17,12 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/router";
 import client from "../../client";
 import EditForm from "./EditForm";
 
 export const LinkComponent = ({ idLink }) => {
+  const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { data, isLoading, isError } = useQuery(["link" + idLink], () =>
     client.get(`Link/getLink?idLink=${idLink}`)
@@ -76,9 +78,14 @@ export const LinkComponent = ({ idLink }) => {
                   />
                 </VStack>
                 <VStack maxW="200px" alignItems={"left"}>
-                  <Heading size="md" noOfLines={1}>
-                    {data?.data?.title}
-                  </Heading>
+                  <Link
+                    isExternal
+                    onClick={() => {
+                      router.push("RoboLink" + idLink);
+                    }}
+                  >
+                    <Heading size="md">{data?.data?.title}</Heading>
+                  </Link>
                   <Link href={data?.data?.url} isExternal w="120%">
                     <Text noOfLines={1}>{data?.data?.url}</Text>
                   </Link>

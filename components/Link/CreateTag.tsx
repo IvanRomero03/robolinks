@@ -53,11 +53,11 @@ const CreateTag = ({ onClose }) => {
     <>
       <HStack>
         <Input
+          type="createTagInputText"
           placeholder="Tag Name"
           onChange={(e) => {
             setTagName(e.target.value);
           }}
-          required
         />
         <Menu>
           <MenuButton type="button">

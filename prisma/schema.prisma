@@ -10,7 +10,7 @@ datasource db {
 model Link {
   idLink      Int        @id @default(autoincrement())
   idUser      Int
-  title       String
+  title       String     @unique
   description String?
   url         String
   picUrl      String     @default("https://cdn-icons-png.flaticon.com/512/3541/3541854.png")

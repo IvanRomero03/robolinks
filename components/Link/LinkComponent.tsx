@@ -16,7 +16,7 @@ import {
   Modal,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import client from "../../client";
 import EditForm from "./EditForm";
 
@@ -25,11 +25,24 @@ export const LinkComponent = ({ idLink }) => {
   const { data, isLoading, isError } = useQuery(["link" + idLink], () =>
     client.get(`Link/getLink?idLink=${idLink}`)
   );
-  //console.log(data?.data);
+  const queryClient = useQueryClient();
+  const { mutate } = useMutation(
+    ["link" + idLink],
+    (values) => client.post("/Link/updateLink", values),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["link" + idLink]);
+      },
+    }
+  );
+  const handleEdit = (values) => {
+    mutate(values);
+  };
+
   return (
     <>
       <Modal isOpen={isOpen} onClose={onClose}>
-        <EditForm onClose={onClose} idLink={idLink} onSubmit={() => {}} />
+        <EditForm onClose={onClose} idLink={idLink} onSubmit={handleEdit} />
       </Modal>
       <Box
         minW="350px"
@@ -79,15 +92,16 @@ export const LinkComponent = ({ idLink }) => {
                     colorScheme="teal"
                     onClick={() => {
                       onOpen();
-                      console.log("Edit Link");
                     }}
                   />
                 </VStack>
               </HStack>
               <HStack mt="2%" mb="2%" alignSelf={"flex-end"}>
-                <Badge colorScheme={data?.data?.tags[0].Tag.tagColor}>
-                  {data?.data?.tags[0].Tag.tagName}
-                </Badge>
+                {data?.data?.tags.map((tag) => (
+                  <Badge key={tag.Tag.idTag} colorScheme={tag.Tag.tagColor}>
+                    {tag.Tag.tagName}
+                  </Badge>
+                ))}
               </HStack>
             </>
           )}

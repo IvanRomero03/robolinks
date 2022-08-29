@@ -25,13 +25,12 @@ import { LinkComponent } from "../components/Link/LinkComponent";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import LinkStack from "../components/Link/linkStack";
 import SearchBar from "../components/Searcher/SearchBar";
+import { Prisma } from "@prisma/client";
 // idea https://excalidraw.com/#json=myQ7PbofUoi1ufoU6SZ65,jLB2YW1xcTTW4qktRK4V1w
 
 export default function Home() {
   const [search, setSearch] = useState("");
   const [tags, setTags] = useState([]);
-  console.log(search);
-  console.log(tags);
 
   return (
     <>

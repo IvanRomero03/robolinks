@@ -27,6 +27,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import client from "../../client";
 import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
 import { useEffect, useState } from "react";
+import { createClient } from "@supabase/supabase-js";
 
 type props = {
   idLink?: number;
@@ -35,31 +36,29 @@ type props = {
 };
 
 const EditForm = ({ idLink, onClose, onSubmit }: props) => {
+  const supabaseLink = "https://bfmvwivyerrefrhrlmxx.supabase.co";
+  const supabaseKey =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJmbXZ3aXZ5ZXJyZWZyaHJsbXh4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2NjE0MzAyMTQsImV4cCI6MTk3NzAwNjIxNH0.qVfVNzYGkQ6s17S-9xW1Lq-ZwTEumsGsNI5yaHUqSWY";
+  const supabase = createClient(supabaseLink, supabaseKey);
   const [selectedTags, setSelectedTags] = useState(new Set() as Set<number>);
   const [isSelected, setIsSelected] = useState({});
 
   const tagsQuery = useQuery(["tags"], () => client.get("/Tag/getTags"));
-  console.log(tagsQuery.data);
 
   const { data, isLoading, isError, isFetching } = useQuery(
     ["link" + idLink],
     async () => await client.get(`Link/getLink?idLink=${idLink}`)
   );
-  const mutateLink = useMutation(async (values) => {
-    console.log(values);
-    await client.post(`Link/editLink`, values);
-  }).mutate;
   const validationSchema = Yup.object().shape({
     title: Yup.string()
       .min(2, "Too Short!")
       .max(50, "Too Long!")
       .required("Required"),
     url: Yup.string().url("Invalid url").required("Required"),
-    picUrl: Yup.string().url("Invalid url"),
+    picUrl: Yup.string(),
     description: Yup.string().max(500, "Too Long!").required("Required"), //change required here and in the backend
   });
-  console.log(data);
-  console.log(selectedTags);
+
   useEffect(() => {
     if (data) {
       setSelectedTags(new Set(data?.data?.tags.map((tag) => tag.Tag.idTag)));
@@ -83,134 +82,170 @@ const EditForm = ({ idLink, onClose, onSubmit }: props) => {
           validationSchema={validationSchema}
           onSubmit={async (values, { setSubmitting }) => {
             values.idLink = idLink;
-            mutateLink(values);
+            if (values.picUrl.substring(0, 4) == "data") {
+              const reader = new FileReader();
+              const base64 = await fetch(values.picUrl);
+              const blob = await base64.blob();
+              const supabaseImagesNumber = await supabase.storage
+                .from("imagenes")
+                .list("RoboLinks");
+              console.log(supabaseImagesNumber);
+              const num = supabaseImagesNumber?.data?.length ?? 0;
+              supabase.storage
+                .from("imagenes")
+                .upload("RoboLinks/" + num + ".png", blob);
+              values.picUrl =
+                "https://bfmvwivyerrefrhrlmxx.supabase.co" +
+                "/storage/v1/object/public/imagenes/RoboLinks/" +
+                num +
+                ".png";
+            }
+            values.idUser = 1; //TODO change this
             onSubmit(values);
             setSubmitting(false);
             onClose();
           }}
         >
-          <Form>
-            <VStack minW="100%" w="90%" alignItems={"flex-start"}>
-              <HStack justify={"space-between"} m="2.5%" w="30%">
-                <VStack
-                  w="100%"
-                  h="100%"
-                  justify={"space-between"}
-                  align={"flex-start"}
-                  mr="2%"
-                >
-                  <Image
-                    src={data?.data?.picUrl}
-                    alt="logo"
-                    boxSize="150px"
-                    borderRadius={"10%"}
-                    shadow={"outline"}
-                  />
-                  <Field name="picUrl" as={Input} placeholder="Image Url" />
-                  <input type="file" name="file" />
-                </VStack>
-                <VStack minW="210%" h="100%" alignItems={"self-start"}>
-                  <HStack w="100%" justify={"space-between"}>
-                    <Code>
-                      <Heading size="md">Title</Heading>
-                    </Code>
-                    <IconButton
-                      aria-label="Close"
-                      icon={<CloseIcon />}
-                      onClick={onClose}
+          {({ values, setFieldValue }) => (
+            <Form>
+              <VStack minW="100%" w="90%" alignItems={"flex-start"}>
+                <HStack justify={"space-between"} m="2.5%" w="30%">
+                  <VStack
+                    w="100%"
+                    h="100%"
+                    justify={"space-between"}
+                    align={"flex-start"}
+                    mr="2%"
+                  >
+                    <Image
+                      src={
+                        values?.picUrl ?? "" //if picUrl is null, then show a default image
+                      }
+                      alt="logo"
+                      boxSize="150px"
+                      borderRadius={"10%"}
+                      shadow={"outline"}
                     />
-                  </HStack>
-                  <Field name="title" as={Input} placeholder="Title" />
-                  <Code>
-                    <Heading size="md">Url</Heading>
-                  </Code>
-                  <Field name="url" as={Input} placeholder="Url" />
-                  <Code>
-                    <Heading size="md">Description</Heading>
-                  </Code>
-                  <Field
-                    name="description"
-                    as={Textarea}
-                    placeholder="Description"
-                  />
-                  <Code>
-                    <Heading size="md">Tags</Heading>
-                  </Code>
-                  <HStack>
-                    <Button colorScheme="teal" size="sm">
-                      Add Tag
-                    </Button>
-                    <Menu>
-                      <MenuButton type="button">
-                        <Badge colorScheme={"green"}>Tags</Badge>
-                      </MenuButton>
-                      <MenuList>
-                        {tagsQuery?.data?.data?.map((tag) => {
-                          console.log(tag);
+                    <Field
+                      name="picUrl"
+                      as={Input}
+                      placeholder="Image Url"
+                      onChange={(e) => {
+                        setFieldValue("picUrl", e.target.value);
+                      }}
+                    />
+                    <input
+                      type="file"
+                      name="file"
+                      accept="image/*"
+                      onChange={async (e) => {
+                        const file = e.target.files[0];
+                        const reader = new FileReader();
+                        reader.readAsDataURL(file);
+                        reader.onloadend = async () => {
+                          setFieldValue("picUrl", reader.result);
+                        };
+                      }}
+                    />
+                  </VStack>
+                  <VStack minW="210%" h="100%" alignItems={"self-start"}>
+                    <HStack w="100%" justify={"space-between"}>
+                      <Code>
+                        <Heading size="md">Title</Heading>
+                      </Code>
+                      <IconButton
+                        aria-label="Close"
+                        icon={<CloseIcon />}
+                        onClick={onClose}
+                      />
+                    </HStack>
+                    <Field name="title" as={Input} placeholder="Title" />
+                    <Code>
+                      <Heading size="md">Url</Heading>
+                    </Code>
+                    <Field name="url" as={Input} placeholder="Url" />
+                    <Code>
+                      <Heading size="md">Description</Heading>
+                    </Code>
+                    <Field
+                      name="description"
+                      as={Textarea}
+                      placeholder="Description"
+                    />
+                    <HStack maxW="90%">
+                      <Menu>
+                        <MenuButton type="button">
+                          <Badge colorScheme={"green"}>Tags</Badge>
+                        </MenuButton>
+                        <MenuList>
+                          {tagsQuery?.data?.data?.map((tag) => {
+                            return (
+                              <MenuItem
+                                key={tag.idTag}
+                                onClick={() => {
+                                  setIsSelected({
+                                    ...isSelected,
+                                    [tag.idTag]: true,
+                                  });
+                                  selectedTags.add(tag.idTag);
+                                  setSelectedTags(selectedTags);
+                                }}
+                              >
+                                <HStack justify={"space-between"}>
+                                  <Badge colorScheme={tag.tagColor}>
+                                    {tag.tagName}
+                                  </Badge>
+                                  <Spacer />
+                                  {isSelected[tag.idTag] ? <CheckIcon /> : null}
+                                </HStack>
+                              </MenuItem>
+                            );
+                          })}
+                        </MenuList>
+                      </Menu>
+
+                      <HStack>
+                        {Array.from(selectedTags).map((tag) => {
+                          const tagData = tagsQuery?.data?.data?.find(
+                            (t) => t.idTag === tag
+                          );
                           return (
-                            <MenuItem
-                              key={tag.idTag}
+                            <Badge
+                              key={tagData.idTag}
+                              colorScheme={tagData.tagColor}
                               onClick={() => {
                                 setIsSelected({
                                   ...isSelected,
-                                  [tag.idTag]: true,
+                                  [tagData.idTag]: false,
                                 });
-                                selectedTags.add(tag.idTag);
+                                selectedTags.delete(tagData.idTag);
                                 setSelectedTags(selectedTags);
                               }}
+                              cursor={"pointer"}
                             >
-                              <HStack justify={"space-between"}>
-                                <Badge colorScheme={tag.tagColor}>
-                                  {tag.tagName}
-                                </Badge>
-                                <Spacer />
-                                {isSelected[tag.idTag] ? <CheckIcon /> : null}
+                              <HStack>
+                                <Text>{tagData.tagName}</Text>
+                                <Center>
+                                  <CloseIcon />
+                                </Center>
                               </HStack>
-                            </MenuItem>
+                            </Badge>
                           );
                         })}
-                      </MenuList>
-                    </Menu>
+                      </HStack>
+                    </HStack>
+                  </VStack>
+                </HStack>
 
-                    {Array.from(selectedTags).map((tag) => {
-                      const tagData = tagsQuery?.data?.data?.find(
-                        (t) => t.idTag === tag
-                      );
-                      return (
-                        <Badge
-                          key={tagData.idTag}
-                          colorScheme={tagData.tagColor}
-                          onClick={() => {
-                            setIsSelected({
-                              ...isSelected,
-                              [tagData.idTag]: false,
-                            });
-                            selectedTags.delete(tagData.idTag);
-                            setSelectedTags(selectedTags);
-                          }}
-                          cursor={"pointer"}
-                        >
-                          <HStack>
-                            <Text>{tagData.tagName}</Text>
-                            <Center>
-                              <CloseIcon />
-                            </Center>
-                          </HStack>
-                        </Badge>
-                      );
-                    })}
-                  </HStack>
-                </VStack>
-              </HStack>
-
-              <HStack minW="100%" m="3%">
-                <Button type="submit" colorScheme={"blue"}>
-                  Submit
-                </Button>{" "}
-                <Spacer /> <Button onClick={onClose}>Cancel</Button>
-              </HStack>
-            </VStack>
-          </Form>
+                <HStack minW="100%" m="3%">
+                  <Button type="submit" colorScheme={"blue"}>
+                    Submit
+                  </Button>{" "}
+                  <Spacer /> <Button onClick={onClose}>Cancel</Button>
+                </HStack>
+              </VStack>
+            </Form>
+          )}
         </Formik>
       </ModalBody>
     </ModalContent>

@@ -13,17 +13,24 @@ import {
   Spacer,
   IconButton,
   Spinner,
+  Modal,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import client from "../../client";
+import EditForm from "./EditForm";
 
 export const LinkComponent = ({ idLink }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const { data, isLoading, isError } = useQuery(["link" + idLink], () =>
     client.get(`Link/getLink?idLink=${idLink}`)
   );
   //console.log(data?.data);
   return (
     <>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <EditForm onClose={onClose} idLink={idLink} onSubmit={() => {}} />
+      </Modal>
       <Box
         minW="350px"
         maxW={"350px"}
@@ -71,6 +78,7 @@ export const LinkComponent = ({ idLink }) => {
                     variant="outline"
                     colorScheme="teal"
                     onClick={() => {
+                      onOpen();
                       console.log("Edit Link");
                     }}
                   />

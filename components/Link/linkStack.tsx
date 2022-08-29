@@ -11,10 +11,9 @@ const LinkStack = ({ search, tags }) => {
       tags: tags,
     })
   );
-  console.log("LinkStack", isFetching);
-  console.log(data);
+
   const chunk = (arr, size) =>
-    Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>
+    Array.from({ length: Math.ceil(arr?.length / size) }, (v, i) =>
       arr.slice(i * size, i * size + size)
     );
   const chunkedData = chunk(data?.data, 3);

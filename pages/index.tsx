@@ -27,11 +27,16 @@ import LinkStack from "../components/Link/linkStack";
 import SearchBar from "../components/Searcher/SearchBar";
 import { Prisma } from "@prisma/client";
 import { isMobile } from "react-device-detect";
+import { getCookie, hasCookie } from "cookies-next";
 // idea https://excalidraw.com/#json=myQ7PbofUoi1ufoU6SZ65,jLB2YW1xcTTW4qktRK4V1w
 
 export default function Home() {
   const [search, setSearch] = useState("");
   const [tags, setTags] = useState([]);
+  if (!hasCookie("RoboLinks")) {
+    const cookies = getCookie("RoboLinks");
+    console.log(cookies);
+  }
 
   return (
     <>

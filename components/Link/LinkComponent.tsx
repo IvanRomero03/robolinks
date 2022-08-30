@@ -81,13 +81,16 @@ export const LinkComponent = ({ idLink }) => {
                   <Link
                     isExternal
                     onClick={() => {
-                      router.push("RoboLink" + idLink);
+                      router.push(String(idLink));
                     }}
                   >
                     <Heading size="md">{data?.data?.title}</Heading>
                   </Link>
                   <Link href={data?.data?.url} isExternal w="120%">
-                    <Text noOfLines={1}>{data?.data?.url}</Text>
+                    <Text noOfLines={1}>
+                      localhost:3000/RoboLink/
+                      {data?.data?.title.replace(" ", "%20")}
+                    </Text>
                   </Link>
                 </VStack>
                 <Spacer />

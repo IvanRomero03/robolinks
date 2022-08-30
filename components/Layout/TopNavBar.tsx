@@ -38,17 +38,17 @@ export const TopNavBar = ({
         zIndex={1}
       >
         <HStack minW="100%" justify={"space-between"}>
-          <Link href="http://github.com/RoBorregos" isExternal>
-            <Image
-              //src={colorMode == "dark" ? "Logo_blanco.png" : "Logo_negro.png"}
-              src={"Logo_blanco.png"}
-              alt="logo"
-              maxH={"65px"}
-              minH={"65px"}
-              minW={"65px"}
-              opacity={1.5}
-            />
-          </Link>
+          <Image
+            //src={colorMode == "dark" ? "Logo_blanco.png" : "Logo_negro.png"}
+            src={"Logo_blanco.png"}
+            alt="logo"
+            maxH={"65px"}
+            minH={"65px"}
+            minW={"65px"}
+            opacity={1.5}
+            onClick={() => router.push("/")}
+            cursor={"pointer"}
+          />
           <Heading opacity={1} color={"white"}>
             RoboLinks
           </Heading>

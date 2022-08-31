@@ -16,7 +16,7 @@ const createLink = async (req: NextApiRequest, res: NextApiResponse) => {
     updatedAt: new Date(),
     User: {
       connect: {
-        idUser: idUser,
+        idUser: Number(idUser),
       },
     },
   };

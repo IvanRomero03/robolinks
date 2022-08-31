@@ -10,4 +10,4 @@ export const prisma: PrismaClient =
     log: ["query", "info", "warn"],
   });
 
-if (process.env.NODE_ENV !== "production") global.prisma = prisma;
+global.prisma = prisma;

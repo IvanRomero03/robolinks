@@ -3,7 +3,6 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 const getLink = async (req: NextApiRequest, res: NextApiResponse) => {
   const { idLink } = req.query;
-  console.log(idLink);
   if (idLink == "undefined") {
     return {};
   }

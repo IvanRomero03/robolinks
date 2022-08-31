@@ -1,21 +1,26 @@
 import { prisma } from "../_db";
 import { NextApiRequest, NextApiResponse } from "next";
 
-const getUser = async (req: NextApiRequest, res: NextApiResponse) => {
+const getLinksByUser = async (req: NextApiRequest, res: NextApiResponse) => {
   const { idUser } = req.query;
-  console.log(idUser);
-  if (!idUser || idUser === "null") {
+  if (!idUser) {
     res
       .status(400)
       .json({ message: "Missing idUser", title: "Invalid request" });
     return;
   }
-  const user = await prisma.user.findUnique({
+  const links = await prisma.link.findMany({
     where: {
       idUser: Number(idUser),
     },
+    select: {
+      idLink: true,
+    },
+    orderBy: {
+      updatedAt: "desc",
+    },
   });
-  res.status(200).json(user);
+  res.status(200).json(links);
 };
 
-export default getUser;
+export default getLinksByUser;

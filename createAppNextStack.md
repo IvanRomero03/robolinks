@@ -28,3 +28,10 @@ npx prisma generate
 - modificar el archivo schema.prisma
 npx prisma db push
 npx prisma generate
+
+
+# for supabase:
+npm install @supabase/supabase-js
+## modify the file .env
+NEXT_PUBLIC_SUPABASE_URL="https://xxxxx.supabase.co"
+NEXT_PUBLIC_SUPABASE_KEY="xxxxx"

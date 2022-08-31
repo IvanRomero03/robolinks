@@ -16,20 +16,41 @@ import {
   Modal,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/router";
 import client from "../../client";
 import EditForm from "./EditForm";
 
-export const LinkComponent = ({ idLink }) => {
+export const LinkComponent = ({ idLink, idUser }) => {
+  const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { data, isLoading, isError } = useQuery(["link" + idLink], () =>
     client.get(`Link/getLink?idLink=${idLink}`)
   );
-  //console.log(data?.data);
+  const queryClient = useQueryClient();
+  const { mutate } = useMutation(
+    ["link" + idLink],
+    (values) => client.post("/Link/updateLink", values),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["link" + idLink]);
+        queryClient.invalidateQueries(["links"]);
+      },
+    }
+  );
+  const handleEdit = (values) => {
+    mutate(values);
+  };
+
   return (
     <>
       <Modal isOpen={isOpen} onClose={onClose}>
-        <EditForm onClose={onClose} idLink={idLink} onSubmit={() => {}} />
+        <EditForm
+          onClose={onClose}
+          idLink={idLink}
+          onSubmit={handleEdit}
+          idUser={idUser ?? 1}
+        />
       </Modal>
       <Box
         minW="350px"
@@ -62,32 +83,43 @@ export const LinkComponent = ({ idLink }) => {
                   />
                 </VStack>
                 <VStack maxW="200px" alignItems={"left"}>
-                  <Heading size="md" noOfLines={1}>
-                    {data?.data?.title}
-                  </Heading>
+                  <Link
+                    isExternal
+                    onClick={() => {
+                      router.push("/RoboLinkInfo/" + String(idLink));
+                    }}
+                  >
+                    <Heading size="md">{data?.data?.title}</Heading>
+                  </Link>
                   <Link href={data?.data?.url} isExternal w="120%">
-                    <Text noOfLines={1}>{data?.data?.url}</Text>
+                    <Text noOfLines={1}>
+                      localhost:3000/
+                      {data?.data?.title.replace(" ", "%20")}
+                    </Text>
                   </Link>
                 </VStack>
                 <Spacer />
                 <VStack alignSelf={"flex-start"}>
-                  <IconButton
-                    aria-label="Edit Link"
-                    icon={<EditIcon />}
-                    size="sm"
-                    variant="outline"
-                    colorScheme="teal"
-                    onClick={() => {
-                      onOpen();
-                      console.log("Edit Link");
-                    }}
-                  />
+                  {idUser && (
+                    <IconButton
+                      aria-label="Edit Link"
+                      icon={<EditIcon />}
+                      size="sm"
+                      variant="outline"
+                      colorScheme="teal"
+                      onClick={() => {
+                        onOpen();
+                      }}
+                    />
+                  )}
                 </VStack>
               </HStack>
               <HStack mt="2%" mb="2%" alignSelf={"flex-end"}>
-                <Badge colorScheme={data?.data?.tags[0].Tag.tagColor}>
-                  {data?.data?.tags[0].Tag.tagName}
-                </Badge>
+                {data?.data?.tags.map((tag) => (
+                  <Badge key={tag?.Tag?.idTag} colorScheme={tag?.Tag?.tagColor}>
+                    {tag?.Tag?.tagName}
+                  </Badge>
+                ))}
               </HStack>
             </>
           )}

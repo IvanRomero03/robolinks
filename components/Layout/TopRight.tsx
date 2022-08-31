@@ -12,18 +12,19 @@ import {
 } from "@chakra-ui/react";
 import { HamburgerIcon } from "@chakra-ui/icons";
 import { ColorModeSwitcher } from "../ColorModeSwitcher";
+import { useRouter } from "next/router";
+import { deleteCookie } from "cookies-next";
 type props = {
-  picUrl: string;
+  picUrl?: string;
+  idUser?: string;
   username?: string;
 };
 
-export const TopRight = ({
-  picUrl = "http://github.com/RoBorregos.png",
-  username,
-}: props) => {
+export const TopRight = ({ picUrl = "", username, idUser }: props) => {
+  const router = useRouter();
   return (
     <>
-      <HStack spacing={4}>
+      <HStack>
         <Avatar src={picUrl} name={username ?? ""} />
         <ColorModeSwitcher />
         <Menu>
@@ -35,14 +36,35 @@ export const TopRight = ({
               color="white"
             />
           </MenuButton>
-          <MenuList>
-            <MenuItem>
-              <Text>Profile</Text>
-            </MenuItem>
-            <MenuItem>
-              <Text>Sign Out</Text>
-            </MenuItem>
-          </MenuList>
+          {idUser ? (
+            <MenuList>
+              <MenuItem
+                onClick={() => {
+                  router.push("/user/" + idUser);
+                }}
+              >
+                <Text>Profile</Text>
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  deleteCookie("RoboLinks");
+                  router.push("/login");
+                }}
+              >
+                <Text>Sign Out</Text>
+              </MenuItem>
+            </MenuList>
+          ) : (
+            <MenuList>
+              <MenuItem
+                onClick={() => {
+                  router.push("/login");
+                }}
+              >
+                <Text>Log In</Text>
+              </MenuItem>
+            </MenuList>
+          )}
         </Menu>
       </HStack>
     </>

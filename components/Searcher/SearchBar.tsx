@@ -18,13 +18,13 @@ import {
 } from "@chakra-ui/react";
 import { SearchMode, SearchModeEnum } from "../../types/SearchMode";
 import { useState } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import client from "../../client";
 import { AddIcon, CheckIcon, CloseIcon } from "@chakra-ui/icons";
 import EditForm from "../Link/EditForm";
 import { useDisclosure } from "@chakra-ui/react";
 
-const SearchBar = ({ setSearch, setTags, search }) => {
+const SearchBar = ({ setSearch, setTags, search, idUser }) => {
   const queryClient = useQueryClient();
   const [selectedTags, setSelectedTags] = useState(new Set() as Set<number>);
   const [isSelected, setIsSelected] = useState({});
@@ -40,11 +40,28 @@ const SearchBar = ({ setSearch, setTags, search }) => {
       })
     );
   };
+
+  const { mutate } = useMutation(
+    (values) => {
+      return client.post("/Link/createLink", values);
+    },
+    {
+      onSuccess: (data) => {
+        queryClient.invalidateQueries(["links"]);
+      },
+    }
+  );
+
+  const handleCreate = (values) => {
+    const m = mutate(values);
+    console.log(m);
+  };
+
   return (
     <>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <EditForm onClose={onClose} onSubmit={() => {}} />
+        <EditForm onClose={onClose} onSubmit={handleCreate} idUser={idUser} />
       </Modal>
       <Box>
         <HStack>

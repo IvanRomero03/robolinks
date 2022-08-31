@@ -46,6 +46,9 @@ const searchLinks = async (req: NextApiRequest, res: NextApiResponse) => {
       select: {
         idLink: true,
       },
+      orderBy: {
+        updatedAt: "desc",
+      },
     });
     res.status(200).json(links);
   } else {
@@ -102,6 +105,9 @@ const searchLinks = async (req: NextApiRequest, res: NextApiResponse) => {
       },
       select: {
         idLink: true,
+      },
+      orderBy: {
+        updatedAt: "desc",
       },
     });
     res.status(200).json(links);

@@ -9,6 +9,7 @@ import {
   Heading,
   VStack,
   Link,
+  HStack,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import React, { useState, useEffect } from "react";
@@ -16,9 +17,12 @@ import { TopRight } from "./TopRight";
 import { theme } from "../../styles/theme";
 import { useColorMode } from "@chakra-ui/react";
 
-export const TopNavBar = ({
-  picUrl = "http://github.com/IvanRomero03.png",
-}) => {
+type props = {
+  picUrl?: string;
+  idUser?: string;
+};
+
+export const TopNavBar = ({ picUrl = "", idUser }: props) => {
   const router = useRouter();
   const { colorMode } = useColorMode();
 
@@ -36,19 +40,25 @@ export const TopNavBar = ({
         opacity={0.9}
         zIndex={1}
       >
-        <Link href="http://github.com/RoBorregos" isExternal>
+        <HStack minW="100%" justify={"space-between"}>
           <Image
             //src={colorMode == "dark" ? "Logo_blanco.png" : "Logo_negro.png"}
-            src={"Logo_blanco.png"}
+            src={
+              "https://bfmvwivyerrefrhrlmxx.supabase.co/storage/v1/object/public/imagenes/Logo_blanco.png"
+            }
             alt="logo"
             maxH={"65px"}
+            minH={"65px"}
+            minW={"65px"}
             opacity={1.5}
+            onClick={() => router.push("/")}
+            cursor={"pointer"}
           />
-        </Link>
-        <Heading opacity={1} color={"white"}>
-          RoboLinks
-        </Heading>
-        <TopRight picUrl={picUrl} />
+          <Heading opacity={1} color={"white"}>
+            RoboLinks
+          </Heading>
+          <TopRight picUrl={picUrl} idUser={idUser} />
+        </HStack>
       </Flex>
     </>
   );

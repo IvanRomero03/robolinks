@@ -21,7 +21,7 @@ import { useRouter } from "next/router";
 import client from "../../client";
 import EditForm from "./EditForm";
 
-export const LinkComponent = ({ idLink }) => {
+export const LinkComponent = ({ idLink, idUser }) => {
   const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { data, isLoading, isError } = useQuery(["link" + idLink], () =>
@@ -45,7 +45,12 @@ export const LinkComponent = ({ idLink }) => {
   return (
     <>
       <Modal isOpen={isOpen} onClose={onClose}>
-        <EditForm onClose={onClose} idLink={idLink} onSubmit={handleEdit} />
+        <EditForm
+          onClose={onClose}
+          idLink={idLink}
+          onSubmit={handleEdit}
+          idUser={idUser ?? 1}
+        />
       </Modal>
       <Box
         minW="350px"
@@ -81,30 +86,32 @@ export const LinkComponent = ({ idLink }) => {
                   <Link
                     isExternal
                     onClick={() => {
-                      router.push(String(idLink));
+                      router.push("/RoboLinkInfo/" + String(idLink));
                     }}
                   >
                     <Heading size="md">{data?.data?.title}</Heading>
                   </Link>
                   <Link href={data?.data?.url} isExternal w="120%">
                     <Text noOfLines={1}>
-                      localhost:3000/RoboLink/
+                      localhost:3000/
                       {data?.data?.title.replace(" ", "%20")}
                     </Text>
                   </Link>
                 </VStack>
                 <Spacer />
                 <VStack alignSelf={"flex-start"}>
-                  <IconButton
-                    aria-label="Edit Link"
-                    icon={<EditIcon />}
-                    size="sm"
-                    variant="outline"
-                    colorScheme="teal"
-                    onClick={() => {
-                      onOpen();
-                    }}
-                  />
+                  {idUser && (
+                    <IconButton
+                      aria-label="Edit Link"
+                      icon={<EditIcon />}
+                      size="sm"
+                      variant="outline"
+                      colorScheme="teal"
+                      onClick={() => {
+                        onOpen();
+                      }}
+                    />
+                  )}
                 </VStack>
               </HStack>
               <HStack mt="2%" mb="2%" alignSelf={"flex-end"}>

@@ -10,13 +10,19 @@ import {
   useToast,
   FormControl,
   FormErrorMessage,
-  FormHelperText,
   VStack,
   Container,
   Flex,
+  HStack,
+  Image,
+  FormLabel,
+  Avatar,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { hasCookie, getCookie } from "cookies-next";
+import { setCookie } from "cookies-next";
+import { TopNavBar } from "../components/Layout/TopNavBar";
+import { isMobile } from "react-device-detect";
+import { supabase } from "../supabase";
 
 const LogInValidationSchema = Yup.object().shape({
   usernameOrEmail: Yup.string().required("Username or email is required"),
@@ -29,21 +35,119 @@ const RegisterValidationSchema = Yup.object().shape({
   password: Yup.string().required("Password is required"),
 });
 
+const isEmail = (email: string) => {
+  const re = /\S+@\S+\.\S+/;
+  return re.test(email);
+};
+
 const LogIn = () => {
   const toast = useToast();
   const router = useRouter();
-  const handleCreateAccount = () => {
-    // router.push("/register");
+  const handleCreateAccount = async (values) => {
+    const { username, email, password, picUrl } = values;
+    console.log("here");
+    if (values.picUrl.substring(0, 4) == "data") {
+      const reader = new FileReader();
+      const base64 = await fetch(values.picUrl);
+      const blob = await base64.blob();
+      const supabaseImagesNumber = await supabase.storage
+        .from("imagenes")
+        .list("RoboLinks");
+      const num = supabaseImagesNumber?.data?.length ?? 0;
+      supabase.storage
+        .from("imagenes")
+        .upload("RoboLinks/" + num + ".png", blob);
+      values.picUrl =
+        process.env.NEXT_PUBLIC_SUPABASE_URL +
+        "/storage/v1/object/public/imagenes/RoboLinks/" +
+        num +
+        ".png";
+    }
+    console.log("here");
+    const response = await client.post("/User/createValidUser", {
+      username: username,
+      email: email,
+      password: password,
+      picUrl: picUrl,
+    });
+    console.log("here");
+    if (response.status === 200) {
+      toast({
+        title: "Account created.",
+        description: "We've created your account for you.",
+        status: "success",
+        isClosable: true,
+      });
+      setCookie("RoboLinks", response.data.idUser);
+      router.push("/");
+    } else {
+      toast({
+        title: response.data.title,
+        description: response.data.message,
+        status: "error",
+        isClosable: true,
+      });
+    }
+    console.log("here");
+    console.log(values);
   };
   const handleLogIn = async (values) => {
-    // router.push("/dashboard");
+    console.log(values);
+    if (isEmail(values.usernameOrEmail)) {
+      const response = await client.post("/User/validateLogInEmail", {
+        email: values.usernameOrEmail,
+        password: values.password,
+      });
+      if (response.data.length == 1) {
+        setCookie("RoboLinks", response.data[0].idUser, {
+          expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
+        });
+        router.push("/");
+      } else {
+        toast({
+          title: "Invalid credentials.",
+          description: "Please try again.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    } else {
+      const response = await client.post("/User/validateLogInUsername", {
+        username: values.usernameOrEmail,
+        password: values.password,
+      });
+      if (response.data.length == 1) {
+        setCookie("RoboLinks", response.data[0].idUser, {
+          expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
+        });
+        router.push("/");
+      } else {
+        toast({
+          title: "Invalid credentials.",
+          description: "Please try again.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    }
   };
 
   return (
     <>
-      <Flex minH="100vh" align={"center"} justify={"center"} minW="100vh">
-        <VStack justify={"space-between"} spacing={6} minW="60%">
-          <Text fontSize="4xl">Log In</Text>
+      <VStack>
+        <TopNavBar />
+        <Container
+          minW="100%"
+          padding={isMobile ? "3.5rem" : "3rem"}
+          background={"gray.700"}
+          backdropBlur={"sm"}
+          opacity={0}
+        ></Container>
+      </VStack>
+      <Flex align={"center"} justify={"center"} m="5%">
+        <HStack justify={"space-between"} spacing={6} w="80%">
           <Formik
             initialValues={{ usernameOrEmail: "", password: "" }}
             validationSchema={LogInValidationSchema}
@@ -51,12 +155,16 @@ const LogIn = () => {
           >
             {({ errors, touched }) => (
               <Form>
+                <Text fontSize="4xl" align={"center"}>
+                  Log In
+                </Text>
                 <FormControl
                   isInvalid={
                     Boolean(errors.usernameOrEmail) &&
                     Boolean(touched.usernameOrEmail)
                   }
                 >
+                  <FormLabel>Username or email.</FormLabel>
                   <Field
                     name="usernameOrEmail"
                     as={Input}
@@ -72,12 +180,15 @@ const LogIn = () => {
                     Boolean(errors.password) && Boolean(touched.password)
                   }
                 >
+                  <FormLabel>Password</FormLabel>
                   <Field
                     name="password"
+                    type="password"
                     as={Input}
                     placeholder="Password"
                     m="5%"
                   />
+
                   <FormErrorMessage>
                     <ErrorMessage name="password" />
                   </FormErrorMessage>
@@ -94,59 +205,129 @@ const LogIn = () => {
               </Form>
             )}
           </Formik>
-          <Text fontSize="4xl">Register</Text>
+          <Text fontSize="4xl" align={"center"}>
+            Or
+          </Text>
           <Formik
-            initialValues={{ username: "", email: "", password: "" }}
+            initialValues={{
+              username: "",
+              email: "",
+              password: "",
+              picUrl: "",
+            }}
             validationSchema={RegisterValidationSchema}
             onSubmit={handleCreateAccount}
           >
-            {({ errors, touched }) => (
+            {({ errors, touched, values, setFieldValue }) => (
               <Form>
-                <FormControl
-                  isInvalid={
-                    Boolean(errors.username) && Boolean(touched.username)
-                  }
-                >
-                  <Field
-                    name="username"
-                    as={Input}
-                    placeholder="Username"
-                    m="5%"
-                  />
-                </FormControl>
-                <FormControl
-                  isInvalid={Boolean(errors.email) && Boolean(touched.email)}
-                >
-                  <Field name="email" as={Input} placeholder="Email" m="5%" />
-                </FormControl>
-                <FormControl
-                  isInvalid={
-                    Boolean(errors.password) && Boolean(touched.password)
-                  }
-                >
-                  <Field
-                    name="password"
-                    as={Input}
-                    placeholder="Password"
-                    m="5%"
-                  />
-                </FormControl>
+                <HStack spacing={8}>
+                  <VStack>
+                    <Text fontSize="4xl">Register</Text>
+                    <FormControl
+                      isInvalid={
+                        Boolean(errors.username) && Boolean(touched.username)
+                      }
+                    >
+                      <FormLabel>Username</FormLabel>
+                      <Field
+                        name="username"
+                        as={Input}
+                        placeholder="Username"
+                        m="5%"
+                      />
+                      <FormErrorMessage>
+                        <ErrorMessage name="username" />
+                      </FormErrorMessage>
+                    </FormControl>
+                    <FormControl
+                      isInvalid={
+                        Boolean(errors.email) && Boolean(touched.email)
+                      }
+                    >
+                      <FormLabel>Email</FormLabel>
+                      <Field
+                        name="email"
+                        as={Input}
+                        placeholder="Email"
+                        m="5%"
+                      />
+                      <FormErrorMessage>
+                        <ErrorMessage name="email" />
+                      </FormErrorMessage>
+                    </FormControl>
+                    <FormControl
+                      isInvalid={
+                        Boolean(errors.password) && Boolean(touched.password)
+                      }
+                    >
+                      <FormLabel>Password</FormLabel>
+                      <Field
+                        name="password"
+                        type="password"
+                        as={Input}
+                        placeholder="Password"
+                        m="5%"
+                      />
+                      <FormErrorMessage>
+                        <ErrorMessage name="password" />
+                      </FormErrorMessage>
+                    </FormControl>
 
-                <Button
-                  type="submit"
-                  colorScheme="teal"
-                  m="5%"
-                  w="100%"
-                  variant={"outline"}
-                >
-                  Create Account
-                </Button>
+                    <Button
+                      type="submit"
+                      colorScheme="teal"
+                      m="5%"
+                      w="100%"
+                      variant={"outline"}
+                    >
+                      Create Account
+                    </Button>
+                  </VStack>
+                  <FormControl>
+                    <HStack>
+                      <FormLabel>Profile Picture</FormLabel>
+                      <Text fontSize="sm" m="2%">
+                        (optional)
+                      </Text>
+                    </HStack>
+                    <VStack m="5%">
+                      <Avatar
+                        src={
+                          values?.picUrl ?? "" //if picUrl is null, then show a default image
+                        }
+                        boxSize="150px"
+                        borderRadius={"10%"}
+                        shadow={"outline"}
+                      />
+                      <Field
+                        name="picUrl"
+                        as={Input}
+                        placeholder="Image Url"
+                        onChange={(e) => {
+                          setFieldValue("picUrl", e.target.value);
+                        }}
+                      />
+                      <input
+                        type="file"
+                        name="file"
+                        accept="image/*"
+                        onChange={async (e) => {
+                          const file = e.target.files[0];
+                          const reader = new FileReader();
+                          reader.readAsDataURL(file);
+                          reader.onloadend = async () => {
+                            setFieldValue("picUrl", reader.result);
+                          };
+                        }}
+                      />
+                    </VStack>
+                  </FormControl>
+                </HStack>
               </Form>
             )}
           </Formik>
-        </VStack>
+        </HStack>
       </Flex>
-      asd
     </>
   );
 };

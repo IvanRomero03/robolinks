@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import client from "../../client";
 import { isMobile } from "react-device-detect";
 
-const LinkStack = ({ search, tags }) => {
+const LinkStack = ({ search, tags, idUser }) => {
   const { data, isLoading, isError, isFetching } = useQuery(["links"], () =>
     client.post("/Link/searchLinks", {
       search: search,
@@ -31,7 +31,11 @@ const LinkStack = ({ search, tags }) => {
             {chunkedData.map((chunk, index) => (
               <HStack key={index} justify={"left"} w="90%" spacing={16}>
                 {chunk.map((link) => (
-                  <LinkComponent key={link.idLink} idLink={link.idLink} />
+                  <LinkComponent
+                    key={link.idLink}
+                    idLink={link.idLink}
+                    idUser={idUser}
+                  />
                 ))}
               </HStack>
             ))}

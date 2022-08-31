@@ -17,8 +17,8 @@ import {
 import { useRouter } from "next/router";
 import React, { useState, useEffect } from "react";
 import { isMobile } from "react-device-detect";
-import { TopNavBar } from "../components/Layout/TopNavBar";
-import client from "../client";
+import { TopNavBar } from "../../components/Layout/TopNavBar";
+import client from "../../client";
 import { useQuery } from "@tanstack/react-query";
 import { CopyIcon } from "@chakra-ui/icons";
 
@@ -105,11 +105,6 @@ const LinkPage = () => {
           </HStack>
         </VStack>
       </HStack>
-      <Heading>Link: {idLink}</Heading>
-      <Text>{data?.data?.title}</Text>
-      <Text>{data?.data?.url}</Text>
-      <Text>{data?.data?.description}</Text>
-      <Text>{JSON.stringify(data?.data)}</Text>
     </>
   );
 };

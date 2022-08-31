@@ -24,7 +24,7 @@ import { AddIcon, CheckIcon, CloseIcon } from "@chakra-ui/icons";
 import EditForm from "../Link/EditForm";
 import { useDisclosure } from "@chakra-ui/react";
 
-const SearchBar = ({ setSearch, setTags, search }) => {
+const SearchBar = ({ setSearch, setTags, search, idUser }) => {
   const queryClient = useQueryClient();
   const [selectedTags, setSelectedTags] = useState(new Set() as Set<number>);
   const [isSelected, setIsSelected] = useState({});
@@ -61,7 +61,7 @@ const SearchBar = ({ setSearch, setTags, search }) => {
     <>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <EditForm onClose={onClose} onSubmit={handleCreate} />
+        <EditForm onClose={onClose} onSubmit={handleCreate} idUser={idUser} />
       </Modal>
       <Box>
         <HStack>

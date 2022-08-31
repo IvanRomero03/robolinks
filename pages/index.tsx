@@ -18,8 +18,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
-import client from "../client";
+import { useEffect, useState } from "react";
 import { TopNavBar } from "../components/Layout/TopNavBar";
 import { LinkComponent } from "../components/Link/LinkComponent";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
@@ -28,20 +27,32 @@ import SearchBar from "../components/Searcher/SearchBar";
 import { Prisma } from "@prisma/client";
 import { isMobile } from "react-device-detect";
 import { getCookie, hasCookie } from "cookies-next";
+import client from "../client";
 // idea https://excalidraw.com/#json=myQ7PbofUoi1ufoU6SZ65,jLB2YW1xcTTW4qktRK4V1w
 
 export default function Home() {
   const [search, setSearch] = useState("");
   const [tags, setTags] = useState([]);
-  if (!hasCookie("RoboLinks")) {
-    const cookies = getCookie("RoboLinks");
-    console.log(cookies);
-  }
+  const [idUser, setIdUser] = useState(null);
+  useEffect(() => {
+    if (hasCookie("RoboLinks")) {
+      const cookies = getCookie("RoboLinks");
+      console.log(cookies);
+      setIdUser(cookies);
+    }
+  }, []);
+
+  const { data, isLoading, isError } = useQuery(["user"], async () => {
+    const { data } = await client.get("/User/getUser?idUser=" + idUser);
+    return data;
+  });
+
+  console.log(idUser);
 
   return (
     <>
       <VStack>
-        <TopNavBar />
+        <TopNavBar picUrl={data?.picUrl} idUser={idUser} />
         <Container
           minW="100%"
           padding={isMobile ? "3.5rem" : "3rem"}
@@ -51,9 +62,14 @@ export default function Home() {
         ></Container>
       </VStack>
       <VStack m="2%">
-        <SearchBar setSearch={setSearch} setTags={setTags} search={search} />
+        <SearchBar
+          setSearch={setSearch}
+          setTags={setTags}
+          search={search}
+          idUser={idUser}
+        />
       </VStack>
-      <LinkStack search={search} tags={tags} />
+      <LinkStack search={search} tags={tags} idUser={idUser} />
       <VStack m="2%">
         <HStack></HStack>
       </VStack>

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const client = axios.create({
-  baseURL: "http://robo-links.vercel.app/api",
+  baseURL: "https://robo-links.vercel.app/api",
   headers: {
     "Content-Type": "application/json",
   },

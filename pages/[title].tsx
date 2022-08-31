@@ -15,12 +15,12 @@ export const LinkPage = () => {
 
   const load = async () => {
     const response = await client.get(`/Link/getByName?title=${title}`);
-
+    console.log(response);
     if (
-      response.status !== 200 ||
-      response.data.data === null ||
-      response.data.data === undefined ||
-      response.data.data == "undefined"
+      response?.status !== 200 ||
+      response?.data?.data === null ||
+      response?.data?.data === undefined ||
+      response?.data?.data == "undefined"
     ) {
       router.push("/404/404");
       return;

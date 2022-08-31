@@ -12,11 +12,27 @@ export const LinkPage = () => {
     ["linkName", title],
     async () => await client.get(`/Link/getByName?title=${title}`)
   );
-  useEffect(() => {
-    if (title == "undefined") {
-      router.push("/");
+
+  const load = async () => {
+    const response = await client.get(`/Link/getByName?title=${title}`);
+
+    if (
+      response.status !== 200 ||
+      response.data.data === null ||
+      response.data.data === undefined ||
+      response.data.data == "undefined"
+    ) {
+      router.push("/404/404");
+      return;
     }
-  }, [title]);
+
+    window.location.href = data?.data?.url;
+  };
+
+  useEffect(() => {
+    load();
+  }, []);
+
   useEffect(() => {
     if (data) {
       window.location.href = data?.data?.url;

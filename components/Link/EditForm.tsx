@@ -101,6 +101,7 @@ const EditForm = ({ idLink, onClose, onSubmit, idUser }: props) => {
               onSubmit={async (values, { setSubmitting }) => {
                 const validTitle = await client.post("/Link/validateTitle", {
                   title: values.title,
+                  idLink: idLink ?? null,
                 });
                 if (!validTitle?.data) {
                   toast({

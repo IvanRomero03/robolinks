@@ -13,6 +13,11 @@ export const LinkPage = () => {
     async () => await client.get(`/Link/getByName?title=${title}`)
   );
   useEffect(() => {
+    if (title == "undefined") {
+      router.push("/");
+    }
+  }, [title]);
+  useEffect(() => {
     if (data) {
       window.location.href = data?.data?.url;
     }

@@ -8,42 +8,22 @@ export const LinkPage = () => {
   const router = useRouter();
   const { title } = router.query;
   String(title).replace("%20", " ");
-  // const { data, isLoading, isError } = useQuery(
-  //   ["linkName", title],
-  //   async () => await client.get(`/Link/getByName?title=${title}`)
-  // );
-
-  const load = async () => {
-    const response = await client.get(`/Link/getByName?title=${title}`);
-    console.log(response);
-    if (
-      response?.status !== 200 ||
-      response?.data?.data === null ||
-      response?.data?.data === undefined ||
-      response?.data?.data == "undefined"
-    ) {
-      router.push("/404/404");
-      return;
-    }
-
-    window.location.href = response?.data?.data?.url;
-  };
+  const { data, isLoading, isError } = useQuery(
+    ["linkName", title],
+    async () => await client.get(`/Link/getByName?title=${title}`)
+  );
 
   useEffect(() => {
-    load();
-  }, []);
+    if (data) {
+      window.location.href = data?.data?.url;
+    }
+  }, [data]);
 
-  // useEffect(() => {
-  //   if (data) {
-  //     window.location.href = data?.data?.url;
-  //   }
-  // }, [data]);
-
-  // useEffect(() => {
-  //   if (isError) {
-  //     router.push("/404/404");
-  //   }
-  // }, [isError]);
+  useEffect(() => {
+    if (isError) {
+      router.push("/404/404");
+    }
+  }, [isError]);
 
   return <Spinner />;
 };

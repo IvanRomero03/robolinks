@@ -14,6 +14,9 @@ export const LinkPage = () => {
   );
 
   const load = async () => {
+    if (!title) {
+      router.push("/404/404");
+    }
     const response = await client.get(`/Link/getByName?title=${title}`);
 
     if (

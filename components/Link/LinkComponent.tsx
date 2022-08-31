@@ -93,7 +93,7 @@ export const LinkComponent = ({ idLink, idUser }) => {
                   </Link>
                   <Link href={data?.data?.url} isExternal w="120%">
                     <Text noOfLines={1}>
-                      localhost:3000/
+                      robo-links.vercel.app/
                       {data?.data?.title.replace(" ", "%20")}
                     </Text>
                   </Link>

@@ -74,7 +74,7 @@ const LinkPage = () => {
           <HStack>
             <Link href={data?.data?.url} isExternal>
               <Code>
-                localhost:3000/RoboLink/{data?.data?.title?.replace(" ", "%20")}
+                robo-links.vercel.app/{data?.data?.title?.replace(" ", "%20")}
               </Code>
             </Link>
             <IconButton
@@ -82,7 +82,7 @@ const LinkPage = () => {
               icon={<CopyIcon />}
               onClick={() => {
                 navigator.clipboard.writeText(
-                  `localhost:3000/RoboLink/${data?.data?.title?.replace(
+                  `robo-links.vercel.app/${data?.data?.title?.replace(
                     " ",
                     "%20"
                   )}`

@@ -8,15 +8,12 @@ export const LinkPage = () => {
   const router = useRouter();
   const { title } = router.query;
   String(title).replace("%20", " ");
-  const { data, isLoading, isError } = useQuery(
-    ["linkName", title],
-    async () => await client.get(`/Link/getByName?title=${title}`)
-  );
+  // const { data, isLoading, isError } = useQuery(
+  //   ["linkName", title],
+  //   async () => await client.get(`/Link/getByName?title=${title}`)
+  // );
 
   const load = async () => {
-    if (!title) {
-      router.push("/404/404");
-    }
     const response = await client.get(`/Link/getByName?title=${title}`);
 
     if (
@@ -29,24 +26,24 @@ export const LinkPage = () => {
       return;
     }
 
-    window.location.href = data?.data?.url;
+    window.location.href = response?.data?.data?.url;
   };
 
   useEffect(() => {
     load();
   }, []);
 
-  useEffect(() => {
-    if (data) {
-      window.location.href = data?.data?.url;
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (data) {
+  //     window.location.href = data?.data?.url;
+  //   }
+  // }, [data]);
 
-  useEffect(() => {
-    if (isError) {
-      router.push("/404/404");
-    }
-  }, [isError]);
+  // useEffect(() => {
+  //   if (isError) {
+  //     router.push("/404/404");
+  //   }
+  // }, [isError]);
 
   return <Spinner />;
 };

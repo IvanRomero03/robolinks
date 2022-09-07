@@ -208,7 +208,7 @@ const EditForm = ({ idLink, onClose, onSubmit, idUser }: props) => {
                         {values?.title && (
                           <Code fontSize="md">
                             robo-links.vercel.app/
-                            {values?.title.replace(" ", "%20")}
+                            {values?.title.replaceAll(" ", "%20")}
                           </Code>
                         )}
                         <Code>

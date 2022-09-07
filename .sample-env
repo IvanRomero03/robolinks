@@ -1,0 +1,4 @@
+DATABASE_URL="mysql://user:password@host:port/dbname"
+
+NEXT_PUBLIC_SUPABASE_URL="https://SpecialUrl.supabase.co"
+NEXT_PUBLIC_SUPABASE_KEY="CrazySupabaseKey"

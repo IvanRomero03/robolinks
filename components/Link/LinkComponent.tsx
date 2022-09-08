@@ -1,4 +1,4 @@
-import { EditIcon } from "@chakra-ui/icons";
+import { CopyIcon, EditIcon } from "@chakra-ui/icons";
 import {
   Box,
   Heading,
@@ -91,10 +91,10 @@ export const LinkComponent = ({ idLink, idUser }) => {
                   >
                     <Heading size="md">{data?.data?.title}</Heading>
                   </Link>
-                  <Link href={data?.data?.url} isExternal w="120%">
+                  <Link href={data?.data?.url} isExternal w="110%">
                     <Text noOfLines={1}>
                       robo-links.vercel.app/
-                      {data?.data?.title.replace(" ", "%20")}
+                      {data?.data?.title.replaceAll(" ", "%20")}
                     </Text>
                   </Link>
                 </VStack>
@@ -112,6 +112,21 @@ export const LinkComponent = ({ idLink, idUser }) => {
                       }}
                     />
                   )}
+                  <IconButton
+                    aria-label="Copy link"
+                    icon={<CopyIcon />}
+                    onClick={() => {
+                      navigator.clipboard.writeText(
+                        `robo-links.vercel.app/${data?.data?.title?.replaceAll(
+                          " ",
+                          "%20"
+                        )}`
+                      );
+                    }}
+                    variant="outline"
+                    size="sm"
+                    colorScheme="teal"
+                  />
                 </VStack>
               </HStack>
               <HStack mt="2%" mb="2%" alignSelf={"flex-end"}>

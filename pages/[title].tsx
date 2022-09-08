@@ -7,20 +7,21 @@ import { Spinner } from "@chakra-ui/react";
 export const LinkPage = () => {
   const router = useRouter();
   const { title } = router.query;
-  String(title).replace("%20", " ");
+  String(title).replaceAll("%20", " ");
   const { data, isLoading, isError } = useQuery(
     ["linkName", title],
     async () => await client.get(`/Link/getByName?title=${title}`)
   );
+
   useEffect(() => {
     if (data) {
-      window.location.href = data?.data?.url;
+      window.location.replace(data?.data?.url);
     }
   }, [data]);
 
   useEffect(() => {
     if (isError) {
-      router.push("/asdasdasd/asdasdasdad");
+      router.push("/404/404");
     }
   }, [isError]);
 

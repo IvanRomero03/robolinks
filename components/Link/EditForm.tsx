@@ -99,8 +99,10 @@ const EditForm = ({ idLink, onClose, onSubmit, idUser }: props) => {
               }
               validationSchema={validationSchema}
               onSubmit={async (values, { setSubmitting }) => {
+                console.log(values);
                 const validTitle = await client.post("/Link/validateTitle", {
                   title: values.title,
+                  idLink: idLink ?? null,
                 });
                 if (!validTitle?.data) {
                   toast({
@@ -207,7 +209,7 @@ const EditForm = ({ idLink, onClose, onSubmit, idUser }: props) => {
                         {values?.title && (
                           <Code fontSize="md">
                             robo-links.vercel.app/
-                            {values?.title.replace(" ", "%20")}
+                            {values?.title.replaceAll(" ", "%20")}
                           </Code>
                         )}
                         <Code>

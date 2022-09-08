@@ -99,6 +99,7 @@ const EditForm = ({ idLink, onClose, onSubmit, idUser }: props) => {
               }
               validationSchema={validationSchema}
               onSubmit={async (values, { setSubmitting }) => {
+                console.log(values);
                 const validTitle = await client.post("/Link/validateTitle", {
                   title: values.title,
                   idLink: idLink ?? null,

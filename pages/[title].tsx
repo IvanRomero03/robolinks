@@ -15,7 +15,7 @@ export const LinkPage = () => {
 
   useEffect(() => {
     if (data) {
-      window.location.href = data?.data?.url;
+      window.location.replace(data?.data?.url);
     }
   }, [data]);
 

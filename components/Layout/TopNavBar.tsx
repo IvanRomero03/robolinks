@@ -16,6 +16,7 @@ import React, { useState, useEffect } from "react";
 import { TopRight } from "./TopRight";
 import { theme } from "../../styles/theme";
 import { useColorMode } from "@chakra-ui/react";
+import Head from "next/head";
 
 type props = {
   picUrl?: string;
@@ -28,6 +29,22 @@ export const TopNavBar = ({ picUrl = "", idUser }: props) => {
 
   return (
     <>
+      <Head>
+        <title>RoboLinks</title>
+        <meta
+          name="description"
+          content="Link shortener and administrator for RoBorregos"
+          property="description"
+        />
+        <meta
+          name="keywords"
+          content="Links Shortener RoBorregos RoboLinks"
+          property="keywords"
+        />
+        <meta name="author" content="RoBorregos" property="author" />
+        <meta name="image" content="./favicon.ico" property="image" />
+        <link rel="icon" href="./favicon.ico" />
+      </Head>
       <Flex
         minW="100%"
         align={"center"}

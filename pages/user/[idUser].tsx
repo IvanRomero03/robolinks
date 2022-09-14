@@ -58,7 +58,7 @@ const UserPage = () => {
   return (
     <>
       <VStack>
-        <TopNavBar picUrl={data?.data?.picUrl} idUser={data?.data?.idUser} />
+        <TopNavBar />
         <Container
           minW="100%"
           padding={isMobile ? "3.5rem" : "3rem"}

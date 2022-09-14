@@ -13,19 +13,23 @@ import {
 import { HamburgerIcon } from "@chakra-ui/icons";
 import { ColorModeSwitcher } from "../ColorModeSwitcher";
 import { useRouter } from "next/router";
-import { deleteCookie } from "cookies-next";
-type props = {
-  picUrl?: string;
-  idUser?: string;
-  username?: string;
-};
+import { deleteCookie, getCookie, hasCookie } from "cookies-next";
+import { useState, useEffect } from "react";
+import client from "../../client";
+import { useQuery } from "@tanstack/react-query";
 
-export const TopRight = ({ picUrl = "", username, idUser }: props) => {
+export const TopRight = () => {
   const router = useRouter();
+  const idUser = getCookie("RoboLinks");
+
+  const { data, isLoading, isError } = useQuery(["user"], async () => {
+    const { data } = await client.get("/User/getUser?idUser=" + idUser);
+    return data;
+  });
   return (
     <>
       <HStack>
-        <Avatar src={picUrl} name={username ?? ""} />
+        <Avatar src={data?.picUrl ?? ""} name={data?.username ?? ""} />
         <ColorModeSwitcher />
         <Menu>
           <MenuButton>

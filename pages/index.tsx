@@ -42,17 +42,10 @@ export default function Home() {
     }
   }, []);
 
-  const { data, isLoading, isError } = useQuery(["user"], async () => {
-    const { data } = await client.get("/User/getUser?idUser=" + idUser);
-    return data;
-  });
-
-  console.log(idUser);
-
   return (
     <>
       <VStack>
-        <TopNavBar picUrl={data?.picUrl} idUser={idUser} />
+        <TopNavBar />
         <Container
           minW="100%"
           padding={isMobile ? "3.5rem" : "3rem"}

@@ -18,12 +18,7 @@ import { theme } from "../../styles/theme";
 import { useColorMode } from "@chakra-ui/react";
 import Head from "next/head";
 
-type props = {
-  picUrl?: string;
-  idUser?: string;
-};
-
-export const TopNavBar = ({ picUrl = "", idUser }: props) => {
+export const TopNavBar = () => {
   const router = useRouter();
   const { colorMode } = useColorMode();
 
@@ -74,7 +69,7 @@ export const TopNavBar = ({ picUrl = "", idUser }: props) => {
           <Heading opacity={1} color={"white"}>
             RoboLinks
           </Heading>
-          <TopRight picUrl={picUrl} idUser={idUser} />
+          <TopRight />
         </HStack>
       </Flex>
     </>

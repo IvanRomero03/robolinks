@@ -93,7 +93,7 @@ export const LinkComponent = ({ idLink, idUser }) => {
                   </Link>
                   <Link href={data?.data?.url} isExternal w="110%">
                     <Text noOfLines={1}>
-                      robo-links.vercel.app/
+                      rbrgs.com/
                       {data?.data?.title.replaceAll(" ", "%20")}
                     </Text>
                   </Link>
@@ -117,10 +117,7 @@ export const LinkComponent = ({ idLink, idUser }) => {
                     icon={<CopyIcon />}
                     onClick={() => {
                       navigator.clipboard.writeText(
-                        `robo-links.vercel.app/${data?.data?.title?.replaceAll(
-                          " ",
-                          "%20"
-                        )}`
+                        `rbrgs.com/${data?.data?.title?.replaceAll(" ", "%20")}`
                       );
                     }}
                     variant="outline"

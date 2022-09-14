@@ -74,7 +74,7 @@ const LinkPage = () => {
           <HStack>
             <Link href={data?.data?.url} isExternal>
               <Code>
-                robo-links.vercel.app/
+                rbrgs.com/
                 {data?.data?.title?.replaceAll(" ", "%20")}
               </Code>
             </Link>
@@ -83,10 +83,7 @@ const LinkPage = () => {
               icon={<CopyIcon />}
               onClick={() => {
                 navigator.clipboard.writeText(
-                  `robo-links.vercel.app/${data?.data?.title?.replaceAll(
-                    " ",
-                    "%20"
-                  )}`
+                  `rbrgs.com/${data?.data?.title?.replaceAll(" ", "%20")}`
                 );
               }}
             />

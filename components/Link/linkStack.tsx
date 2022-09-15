@@ -20,7 +20,7 @@ const LinkStack = ({ search, tags, idUser }) => {
     // 1320 = 3 columnas + 2 margenes + 2 espacios
     const handleResize = () => {
       const cols = window.innerWidth - 70;
-      const cols2 = cols / (350 + 16);
+      const cols2 = cols / 375;
       setCols(Math.floor(cols2));
     };
     window.addEventListener("resize", handleResize);
@@ -29,6 +29,11 @@ const LinkStack = ({ search, tags, idUser }) => {
       window.removeEventListener("resize", handleResize);
     };
   });
+  useEffect(() => {
+    const cols = window.innerWidth - 70;
+    const cols2 = cols / 375;
+    setCols(Math.floor(cols2));
+  }, []);
 
   const chunk = (arr, size) =>
     Array.from({ length: Math.ceil(arr?.length / size) }, (v, i) =>

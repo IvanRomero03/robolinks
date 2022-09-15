@@ -2,8 +2,8 @@ import { prisma } from "../_db";
 import { NextApiRequest, NextApiResponse } from "next";
 
 const updateLink = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { idLink, url, description, title, picUrl } = req.body;
-  if (!idLink || !url || !title) {
+  const { idLink, url, description, title, picUrl, short } = req.body;
+  if (!idLink || !url || !title || !short) {
     return res.status(400).json({ message: "Missing required fields" });
   }
   const link = await prisma.link.update({
@@ -14,6 +14,7 @@ const updateLink = async (req: NextApiRequest, res: NextApiResponse) => {
       url: url,
       description: description,
       title: title,
+      short: short,
       picUrl:
         picUrl ?? "https://cdn-icons-png.flaticon.com/512/3541/3541854.png",
       updatedAt: new Date(),

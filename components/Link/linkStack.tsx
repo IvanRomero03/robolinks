@@ -4,6 +4,7 @@ import { LinkComponent } from "./LinkComponent";
 import { useQuery } from "@tanstack/react-query";
 import client from "../../client";
 import { isMobile } from "react-device-detect";
+import { useEffect, useState } from "react";
 
 const LinkStack = ({ search, tags, idUser }) => {
   const { data, isLoading, isError, isFetching } = useQuery(["links"], () =>
@@ -12,12 +13,28 @@ const LinkStack = ({ search, tags, idUser }) => {
       tags: tags,
     })
   );
+  const [cols, setCols] = useState(3);
+
+  useEffect(() => {
+    //console.log(window.innerWidth);
+    // 1320 = 3 columnas + 2 margenes + 2 espacios
+    const handleResize = () => {
+      const cols = window.innerWidth - 70;
+      const cols2 = cols / (350 + 16);
+      setCols(Math.floor(cols2));
+    };
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  });
 
   const chunk = (arr, size) =>
     Array.from({ length: Math.ceil(arr?.length / size) }, (v, i) =>
       arr.slice(i * size, i * size + size)
     );
-  const chunkedData = chunk(data?.data, isMobile ? 1 : 3);
+  const chunkedData = chunk(data?.data, isMobile ? 1 : cols);
 
   return (
     <>

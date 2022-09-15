@@ -58,6 +58,8 @@ const LinkPage = () => {
             borderRadius="20%"
             border={"2px"}
             boxSize="400px"
+            minH={"400px"}
+            minW={"400px"}
           />
         </VStack>
         <VStack align={"left"} m="5%" spacing={4} minW="60%" minH="60%">
@@ -75,7 +77,7 @@ const LinkPage = () => {
             <Link href={data?.data?.url} isExternal>
               <Code>
                 rbrgs.com/
-                {data?.data?.title?.replaceAll(" ", "%20")}
+                {data?.data?.short?.replaceAll(" ", "%20")}
               </Code>
             </Link>
             <IconButton
@@ -83,7 +85,7 @@ const LinkPage = () => {
               icon={<CopyIcon />}
               onClick={() => {
                 navigator.clipboard.writeText(
-                  `rbrgs.com/${data?.data?.title?.replaceAll(" ", "%20")}`
+                  `rbrgs.com/${data?.data?.short?.replaceAll(" ", "%20")}`
                 );
               }}
             />

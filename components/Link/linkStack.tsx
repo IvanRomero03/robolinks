@@ -18,10 +18,17 @@ const LinkStack = ({ search, tags, idUser }) => {
   useEffect(() => {
     //console.log(window.innerWidth);
     // 1320 = 3 columnas + 2 margenes + 2 espacios
-    const cols = window.innerWidth - 140;
-    const cols2 = cols / (350 + 18);
-    setCols(Math.floor(cols2));
-  }, []);
+    const handleResize = () => {
+      const cols = window.innerWidth - 70;
+      const cols2 = cols / (350 + 16);
+      setCols(Math.floor(cols2));
+    };
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  });
 
   const chunk = (arr, size) =>
     Array.from({ length: Math.ceil(arr?.length / size) }, (v, i) =>

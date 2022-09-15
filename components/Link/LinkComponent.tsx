@@ -94,7 +94,7 @@ export const LinkComponent = ({ idLink, idUser }) => {
                   <Link href={data?.data?.url} isExternal w="110%">
                     <Text noOfLines={1}>
                       rbrgs.com/
-                      {data?.data?.title.replaceAll(" ", "%20")}
+                      {data?.data?.short.replaceAll(" ", "%20")}
                     </Text>
                   </Link>
                 </VStack>
@@ -117,7 +117,7 @@ export const LinkComponent = ({ idLink, idUser }) => {
                     icon={<CopyIcon />}
                     onClick={() => {
                       navigator.clipboard.writeText(
-                        `rbrgs.com/${data?.data?.title?.replaceAll(" ", "%20")}`
+                        `rbrgs.com/${data?.data?.short?.replaceAll(" ", "%20")}`
                       );
                     }}
                     variant="outline"

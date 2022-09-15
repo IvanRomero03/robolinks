@@ -10,14 +10,16 @@ datasource db {
 model Link {
   idLink      Int        @id @default(autoincrement())
   idUser      Int
-  title       String     @unique
+  title       String
   description String?
+  short       String     @unique
   url         String     @db.Text
   picUrl      String     @default("https://cdn-icons-png.flaticon.com/512/3541/3541854.png")
   createdAt   DateTime   @default(now())
   updatedAt   DateTime
   User        User       @relation(fields: [idUser], references: [idUser])
   LinkTags    LinkTags[]
+  Visit       Visit[]
 
   @@index([idUser], map: "Link_idUser_fkey")
 }
@@ -48,4 +50,14 @@ model User {
   picUrl    String?
   createdAt DateTime @default(now())
   Link      Link[]
+}
+
+model Visit {
+  idVisit   Int      @id @default(autoincrement())
+  idLink    Int
+  ip        String
+  createdAt DateTime @default(now())
+  Link      Link     @relation(fields: [idLink], references: [idLink])
+
+  @@index([idLink], map: "Visit_idLink_fkey")
 }

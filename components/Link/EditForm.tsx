@@ -70,7 +70,14 @@ const EditForm = ({ idLink, onClose, onSubmit, idUser }: props) => {
     title: Yup.string()
       .min(2, "Too Short!")
       .max(50, "Too Long!")
-      .required("Required"),
+      .required("Required")
+      .matches(/^[a-zA-Z0-9 ]*$/, "Only alphanumeric characters and spaces"),
+    short: Yup.string()
+      .min(2, "Too Short!")
+      .max(50, "Too Long!")
+      .required("Required")
+      // only alphanumeric characters and spaces
+      .matches(/^[a-zA-Z0-9 ]*$/, "Only alphanumeric characters and spaces"),
     url: Yup.string().url("Invalid url").required("Required"),
     description: Yup.string().max(500, "Too Long!"), //change required here and in the backend
   });
@@ -91,22 +98,24 @@ const EditForm = ({ idLink, onClose, onSubmit, idUser }: props) => {
                   ? data?.data
                   : {
                       title: "",
+                      short: "",
                       url: "",
                       picUrl:
                         "https://cdn-icons-png.flaticon.com/512/3541/3541854.png",
                       description: "",
+                      changable: true,
                     }
               }
               validationSchema={validationSchema}
               onSubmit={async (values, { setSubmitting }) => {
                 console.log(values);
-                const validTitle = await client.post("/Link/validateTitle", {
-                  title: values.title,
+                const validShort = await client.post("/Link/validateShort", {
+                  short: values.short,
                   idLink: idLink ?? null,
                 });
-                if (!validTitle?.data) {
+                if (!validShort?.data) {
                   toast({
-                    title: "Title already exists",
+                    title: "Short already exists",
                     position: "top",
                     status: "error",
                     isClosable: true,
@@ -198,6 +207,12 @@ const EditForm = ({ idLink, onClose, onSubmit, idUser }: props) => {
                             name="title"
                             as={Input}
                             placeholder="Title"
+                            onChange={(e) => {
+                              setFieldValue("title", e.target.value);
+                              if (values.changable) {
+                                setFieldValue("short", e.target.value);
+                              }
+                            }}
                             required
                           />
                           <FormHelperText>
@@ -206,12 +221,36 @@ const EditForm = ({ idLink, onClose, onSubmit, idUser }: props) => {
                               errors?.title.toString()}
                           </FormHelperText>
                         </FormControl>
-                        {values?.title && (
+                        <FormControl
+                          isInvalid={Boolean(!!errors.short && touched.short)}
+                        >
+                          <Field
+                            name="short"
+                            as={Input}
+                            placeholder="Short"
+                            onChange={(e) => {
+                              setFieldValue("short", e.target.value);
+                              if (e.target.value.length == 0) {
+                                setFieldValue("changable", true);
+                              } else {
+                                setFieldValue("changable", false);
+                              }
+                            }}
+                            required
+                          />
+                          <FormHelperText>
+                            {errors.short &&
+                              touched.short &&
+                              errors?.short.toString()}
+                          </FormHelperText>
+                        </FormControl>
+                        {values?.short && (
                           <Code fontSize="md">
                             rbrgs.com/
-                            {values?.title.replaceAll(" ", "%20")}
+                            {values?.short.replaceAll(" ", "%20")}
                           </Code>
                         )}
+
                         <Code>
                           <Heading size="md">Url</Heading>
                         </Code>
@@ -242,7 +281,6 @@ const EditForm = ({ idLink, onClose, onSubmit, idUser }: props) => {
                             name="description"
                             as={Textarea}
                             placeholder="Description"
-                            required
                           />
                           <FormHelperText>
                             {errors.description &&

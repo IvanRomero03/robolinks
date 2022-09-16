@@ -45,7 +45,6 @@ const LogIn = () => {
   const router = useRouter();
   const handleCreateAccount = async (values) => {
     const { username, email, password, picUrl } = values;
-    console.log("here");
     if (values.picUrl.substring(0, 4) == "data") {
       const reader = new FileReader();
       const base64 = await fetch(values.picUrl);
@@ -63,14 +62,12 @@ const LogIn = () => {
         num +
         ".png";
     }
-    console.log("here");
     const response = await client.post("/User/createValidUser", {
       username: username,
       email: email,
       password: password,
       picUrl: picUrl,
     });
-    console.log("here");
     if (response.status === 200) {
       toast({
         title: "Account created.",
@@ -88,11 +85,8 @@ const LogIn = () => {
         isClosable: true,
       });
     }
-    console.log("here");
-    console.log(values);
   };
   const handleLogIn = async (values) => {
-    console.log(values);
     if (isEmail(values.usernameOrEmail)) {
       const response = await client.post("/User/validateLogInEmail", {
         email: values.usernameOrEmail,

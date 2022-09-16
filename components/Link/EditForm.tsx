@@ -108,7 +108,6 @@ const EditForm = ({ idLink, onClose, onSubmit, idUser }: props) => {
               }
               validationSchema={validationSchema}
               onSubmit={async (values, { setSubmitting }) => {
-                console.log(values);
                 const validShort = await client.post("/Link/validateShort", {
                   short: values.short,
                   idLink: idLink ?? null,

@@ -54,7 +54,6 @@ const SearchBar = ({ setSearch, setTags, search, idUser }) => {
 
   const handleCreate = (values) => {
     const m = mutate(values);
-    console.log(m);
   };
 
   return (

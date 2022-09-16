@@ -13,6 +13,8 @@ import {
   Badge,
   Avatar,
   IconButton,
+  Center,
+  Spacer,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import React, { useState, useEffect } from "react";
@@ -21,6 +23,8 @@ import { TopNavBar } from "../../components/Layout/TopNavBar";
 import client from "../../client";
 import { useQuery } from "@tanstack/react-query";
 import { CopyIcon } from "@chakra-ui/icons";
+import VisitsHistogram from "../../components/DataVisualization/VisitsHistogram";
+import VisitsDateHistogram from "../../components/DataVisualization/VisitsByDateHistogram";
 
 const LinkPage = () => {
   const router = useRouter();
@@ -62,7 +66,7 @@ const LinkPage = () => {
             minW={"400px"}
           />
         </VStack>
-        <VStack align={"left"} m="5%" spacing={4} minW="60%" minH="60%">
+        <VStack align={"left"} m="5%" spacing={4} minW="60%" minH="40%">
           <Heading>{data?.data?.title}</Heading>
           {/** Author info */}
           <HStack>
@@ -105,6 +109,29 @@ const LinkPage = () => {
           </HStack>
         </VStack>
       </HStack>
+      <VStack align={"flex-start"} m="5%" spacing={8}>
+        <Heading>Analytics</Heading>
+        <HStack align={"left"} m="5%" spacing={4} minW="80%" minH="60%">
+          <Box w={"100%"} border="2px" minH="60%" padding={"3rem"} maxH="60%">
+            <Code>Visits by Country:</Code>
+            <VisitsHistogram idLink={idLink} />
+          </Box>
+          <Box
+            w={"100%"}
+            border="2px"
+            minH="60%"
+            padding={"3rem"}
+            maxH="60%"
+            justifyItems={"center"}
+            flex="100%"
+          >
+            <Code>Visits by Date:</Code>
+            <Spacer />
+            <VisitsDateHistogram idLink={idLink} />
+            <Spacer />
+          </Box>
+        </HStack>
+      </VStack>
     </>
   );
 };

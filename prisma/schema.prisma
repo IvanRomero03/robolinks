@@ -12,11 +12,11 @@ model Link {
   idUser      Int
   title       String
   description String?
-  short       String     @unique
   url         String     @db.Text
   picUrl      String     @default("https://cdn-icons-png.flaticon.com/512/3541/3541854.png")
   createdAt   DateTime   @default(now())
   updatedAt   DateTime
+  short       String     @unique
   User        User       @relation(fields: [idUser], references: [idUser])
   LinkTags    LinkTags[]
   Visit       Visit[]
@@ -56,8 +56,8 @@ model Visit {
   idVisit   Int      @id @default(autoincrement())
   idLink    Int
   ip        String?
+  createdAt DateTime @default(dbgenerated("(now())")) @db.Date
   country   String?
-  createdAt DateTime @default(now())
   Link      Link     @relation(fields: [idLink], references: [idLink])
 
   @@index([idLink], map: "Visit_idLink_fkey")

@@ -55,7 +55,8 @@ model User {
 model Visit {
   idVisit   Int      @id @default(autoincrement())
   idLink    Int
-  ip        String
+  ip        String?
+  country   String?
   createdAt DateTime @default(now())
   Link      Link     @relation(fields: [idLink], references: [idLink])
 

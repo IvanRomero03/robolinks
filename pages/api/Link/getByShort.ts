@@ -11,6 +11,7 @@ const getByShort = async (req: NextApiRequest, res: NextApiResponse) => {
     },
     select: {
       url: true,
+      idLink: true,
     },
   });
   res.status(200).json(link);

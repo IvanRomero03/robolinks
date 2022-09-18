@@ -1,22 +1,7 @@
-import {
-  Flex,
-  Box,
-  Container,
-  Button,
-  Image,
-  Code,
-  Text,
-  Heading,
-  VStack,
-  Link,
-  HStack,
-} from "@chakra-ui/react";
-import { useRouter } from "next/router";
-import React, { useState, useEffect } from "react";
-import { TopRight } from "./TopRight";
-import { theme } from "../../styles/theme";
-import { useColorMode } from "@chakra-ui/react";
+import { Flex, Heading, HStack, Image, useColorMode } from "@chakra-ui/react";
 import Head from "next/head";
+import { useRouter } from "next/router";
+import { TopRight } from "./TopRight";
 
 export const TopNavBar = () => {
   const router = useRouter();

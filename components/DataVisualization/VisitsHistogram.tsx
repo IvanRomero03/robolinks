@@ -1,8 +1,8 @@
-import { HStack, Box, Container } from "@chakra-ui/react";
+import { Box, Container, HStack } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
-import client from "../../client";
-import { VictoryChart, VictoryBar, VictoryPie } from "victory";
 import { useEffect, useState } from "react";
+import { VictoryPie } from "victory";
+import client from "../../client";
 
 const VisitsHistogram = ({ idLink }) => {
   const { data, isLoading, isError } = useQuery(

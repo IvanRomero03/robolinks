@@ -1,18 +1,17 @@
+import { AddIcon } from "@chakra-ui/icons";
 import {
-  Input,
-  Button,
   Badge,
+  HStack,
   IconButton,
+  Input,
   Menu,
   MenuButton,
-  MenuList,
   MenuItem,
-  HStack,
+  MenuList,
 } from "@chakra-ui/react";
-import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import client from "../../client";
-import { AddIcon, CloseIcon } from "@chakra-ui/icons";
 
 const colorSchemeArray = [
   "gray",

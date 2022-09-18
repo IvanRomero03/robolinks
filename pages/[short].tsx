@@ -1,9 +1,9 @@
-import { useRouter } from "next/router";
-import React, { useState, useEffect } from "react";
-import client from "../client";
-import { useQuery } from "@tanstack/react-query";
 import { Spinner } from "@chakra-ui/react";
+import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 import useReactIpLocation from "react-ip-details";
+import client from "../client";
 
 export const LinkPage = () => {
   const router = useRouter();

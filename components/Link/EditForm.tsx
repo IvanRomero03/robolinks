@@ -1,48 +1,44 @@
+import { AddIcon, CheckIcon, CloseIcon } from "@chakra-ui/icons";
 import {
-  ModalContent,
-  ModalBody,
-  ModalHeader,
-  ModalFooter,
-  Input,
-  Button,
-  Heading,
-  IconButton,
-  Spacer,
-  HStack,
-  VStack,
-  Image,
-  Code,
-  Textarea,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
   Badge,
-  Text,
+  Button,
   Center,
+  Code,
+  Flex,
   FormControl,
   FormHelperText,
+  Heading,
+  HStack,
+  IconButton,
+  Image,
+  Input,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  ModalBody,
+  ModalContent,
   Popover,
-  PopoverTrigger,
-  Portal,
-  PopoverContent,
   PopoverBody,
-  PopoverHeader,
   PopoverCloseButton,
+  PopoverContent,
+  PopoverHeader,
+  PopoverTrigger,
+  Spacer,
+  Text,
+  Textarea,
   useDisclosure,
   useToast,
-  Container,
-  Flex,
+  VStack,
 } from "@chakra-ui/react";
-import { Form, Formik, Field, yupToFormErrors } from "formik";
-import * as Yup from "yup";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import client from "../../client";
-import { AddIcon, CheckIcon, CloseIcon } from "@chakra-ui/icons";
-import { useEffect, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
-import CreateTag from "./CreateTag";
+import { useQuery } from "@tanstack/react-query";
+import { Field, Form, Formik } from "formik";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import * as Yup from "yup";
+import client from "../../client";
+import CreateTag from "./CreateTag";
 
 type props = {
   idLink?: number;

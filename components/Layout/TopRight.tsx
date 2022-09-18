@@ -1,22 +1,19 @@
+import { HamburgerIcon } from "@chakra-ui/icons";
 import {
-  IconButton,
-  Image,
+  Avatar,
   HStack,
+  IconButton,
   Menu,
   MenuButton,
-  MenuList,
   MenuItem,
+  MenuList,
   Text,
-  Button,
-  Avatar,
 } from "@chakra-ui/react";
-import { HamburgerIcon } from "@chakra-ui/icons";
-import { ColorModeSwitcher } from "../ColorModeSwitcher";
-import { useRouter } from "next/router";
-import { deleteCookie, getCookie, hasCookie } from "cookies-next";
-import { useState, useEffect } from "react";
-import client from "../../client";
 import { useQuery } from "@tanstack/react-query";
+import { deleteCookie, getCookie } from "cookies-next";
+import { useRouter } from "next/router";
+import client from "../../client";
+import { ColorModeSwitcher } from "../ColorModeSwitcher";
 
 export const TopRight = () => {
   const router = useRouter();

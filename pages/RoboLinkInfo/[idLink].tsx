@@ -1,30 +1,27 @@
-import {
-  Flex,
-  Box,
-  Container,
-  Button,
-  Image,
-  Code,
-  Text,
-  Heading,
-  VStack,
-  Link,
-  HStack,
-  Badge,
-  Avatar,
-  IconButton,
-  Center,
-  Spacer,
-} from "@chakra-ui/react";
-import { useRouter } from "next/router";
-import React, { useState, useEffect } from "react";
-import { isMobile } from "react-device-detect";
-import { TopNavBar } from "../../components/Layout/TopNavBar";
-import client from "../../client";
-import { useQuery } from "@tanstack/react-query";
 import { CopyIcon } from "@chakra-ui/icons";
-import VisitsHistogram from "../../components/DataVisualization/VisitsHistogram";
+import {
+  Avatar,
+  Badge,
+  Box,
+  Code,
+  Container,
+  Heading,
+  HStack,
+  IconButton,
+  Image,
+  Link,
+  Spacer,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
+import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+import { isMobile } from "react-device-detect";
+import client from "../../client";
 import VisitsDateHistogram from "../../components/DataVisualization/VisitsByDateHistogram";
+import VisitsHistogram from "../../components/DataVisualization/VisitsHistogram";
+import { TopNavBar } from "../../components/Layout/TopNavBar";
 
 const LinkPage = () => {
   const router = useRouter();

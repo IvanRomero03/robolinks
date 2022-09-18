@@ -1,27 +1,24 @@
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import { useRouter } from "next/router";
-import client from "../client";
 import {
-  Input,
+  Avatar,
   Button,
-  Text,
-  Box,
-  useToast,
-  FormControl,
-  FormErrorMessage,
-  VStack,
   Container,
   Flex,
-  HStack,
-  Image,
+  FormControl,
+  FormErrorMessage,
   FormLabel,
-  Avatar,
+  HStack,
+  Input,
+  Text,
+  useToast,
+  VStack,
 } from "@chakra-ui/react";
-import { useState } from "react";
 import { setCookie } from "cookies-next";
-import { TopNavBar } from "../components/Layout/TopNavBar";
+import { ErrorMessage, Field, Form, Formik } from "formik";
+import { useRouter } from "next/router";
 import { isMobile } from "react-device-detect";
+import * as Yup from "yup";
+import client from "../client";
+import { TopNavBar } from "../components/Layout/TopNavBar";
 import { supabase } from "../supabase";
 
 const LogInValidationSchema = Yup.object().shape({

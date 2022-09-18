@@ -1,10 +1,9 @@
-import { Spinner, Stack, VStack, Text, HStack } from "@chakra-ui/react";
-import React from "react";
-import { LinkComponent } from "./LinkComponent";
+import { HStack, Spinner, Text, VStack } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
-import client from "../../client";
-import { isMobile } from "react-device-detect";
 import { useEffect, useState } from "react";
+import { isMobile } from "react-device-detect";
+import client from "../../client";
+import { LinkComponent } from "./LinkComponent";
 
 const LinkStack = ({ search, tags, idUser }) => {
   const { data, isLoading, isError, isFetching } = useQuery(["links"], () =>

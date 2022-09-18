@@ -4,8 +4,6 @@ import { Prisma } from "@prisma/client";
 
 const createLink = async (req: NextApiRequest, res: NextApiResponse) => {
   const { idUser, title, description, url, picUrl, tags, short } = req.body;
-  console.log(url, "url");
-  console.log(String(url), "url2");
   if (!idUser || !title || !url || !short) {
     return res.status(400).json({ message: "Missing required fields" });
   }
@@ -37,7 +35,6 @@ const createLink = async (req: NextApiRequest, res: NextApiResponse) => {
         idTag: tag,
       })),
     });
-    console.log(newLinkTags);
   }
 
   return res.status(200).json(link);

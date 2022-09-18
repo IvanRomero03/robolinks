@@ -35,7 +35,6 @@ const updateLink = async (req: NextApiRequest, res: NextApiResponse) => {
         idTag: tag,
       })),
     });
-    console.log(newLinkTags);
   }
 
   res.status(200).json(link);

@@ -1,28 +1,26 @@
+import { AddIcon, CheckIcon, CloseIcon } from "@chakra-ui/icons";
 import {
-  Input,
+  Badge,
   Box,
-  HStack,
   Button,
+  Center,
+  HStack,
+  IconButton,
+  Input,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
-  Badge,
-  Code,
-  Spacer,
-  Center,
-  Text,
-  IconButton,
   Modal,
   ModalOverlay,
+  Spacer,
+  Text,
+  useDisclosure,
 } from "@chakra-ui/react";
-import { SearchMode, SearchModeEnum } from "../../types/SearchMode";
-import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import client from "../../client";
-import { AddIcon, CheckIcon, CloseIcon } from "@chakra-ui/icons";
 import EditForm from "../Link/EditForm";
-import { useDisclosure } from "@chakra-ui/react";
 
 const SearchBar = ({ setSearch, setTags, search, idUser }) => {
   const queryClient = useQueryClient();
@@ -54,7 +52,6 @@ const SearchBar = ({ setSearch, setTags, search, idUser }) => {
 
   const handleCreate = (values) => {
     const m = mutate(values);
-    console.log(m);
   };
 
   return (

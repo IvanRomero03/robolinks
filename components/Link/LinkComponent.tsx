@@ -1,22 +1,20 @@
 import { CopyIcon, EditIcon } from "@chakra-ui/icons";
 import {
+  Badge,
   Box,
   Heading,
-  Text,
-  VStack,
   HStack,
-  Image,
-  Code,
-  Badge,
-  Button,
-  Link,
-  Spacer,
   IconButton,
-  Spinner,
+  Image,
+  Link,
   Modal,
+  Spacer,
+  Spinner,
+  Text,
   useDisclosure,
+  VStack,
 } from "@chakra-ui/react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import client from "../../client";
 import EditForm from "./EditForm";

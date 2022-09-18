@@ -1,33 +1,11 @@
-import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
-import {
-  Badge,
-  Box,
-  Button,
-  Center,
-  Container,
-  HStack,
-  Input,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  Spacer,
-  Spinner,
-  Stack,
-  Text,
-  VStack,
-} from "@chakra-ui/react";
-import { useQuery } from "@tanstack/react-query";
+import { Container, Text, VisuallyHidden, VStack } from "@chakra-ui/react";
+import { getCookie, hasCookie } from "cookies-next";
+import Link from "next/link";
 import { useEffect, useState } from "react";
+import { isMobile } from "react-device-detect";
 import { TopNavBar } from "../components/Layout/TopNavBar";
-import { LinkComponent } from "../components/Link/LinkComponent";
-import { useQueryClient, useMutation } from "@tanstack/react-query";
 import LinkStack from "../components/Link/linkStack";
 import SearchBar from "../components/Searcher/SearchBar";
-import { Prisma } from "@prisma/client";
-import { isMobile } from "react-device-detect";
-import { getCookie, hasCookie } from "cookies-next";
-import client from "../client";
 // idea https://excalidraw.com/#json=myQ7PbofUoi1ufoU6SZ65,jLB2YW1xcTTW4qktRK4V1w
 
 export default function Home() {
@@ -43,6 +21,14 @@ export default function Home() {
 
   return (
     <>
+      <VisuallyHidden>
+        RoboLinks is a RoBorregos internal tool to share and manage links and
+        resources.
+        <Text>
+          Check out our website at{" "}
+          <Link href="https://roborregos.com">roborregos.com</Link>
+        </Text>
+      </VisuallyHidden>
       <VStack>
         <TopNavBar />
         <Container
@@ -62,9 +48,6 @@ export default function Home() {
         />
       </VStack>
       <LinkStack search={search} tags={tags} idUser={idUser} />
-      <VStack m="2%">
-        <HStack></HStack>
-      </VStack>
     </>
   );
 }

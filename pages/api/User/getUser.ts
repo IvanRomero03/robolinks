@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 const getUser = async (req: NextApiRequest, res: NextApiResponse) => {
   const { idUser } = req.query;
-  if (!idUser || idUser === "null") {
+  if (!idUser || idUser === "null" || idUser === "undefined") {
     res
       .status(400)
       .json({ message: "Missing idUser", title: "Invalid request" });

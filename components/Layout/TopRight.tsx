@@ -3,22 +3,64 @@ import {
   Avatar,
   HStack,
   IconButton,
+  Image,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { deleteCookie, getCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import client from "../../client";
 import { ColorModeSwitcher } from "../ColorModeSwitcher";
+import { useMsal } from "@azure/msal-react";
+import { loginRequest } from "../../authConfig";
+import { setCookie } from "cookies-next";
 
 export const TopRight = () => {
   const router = useRouter();
   const idUser = getCookie("RoboLinks");
+  const toast = useToast();
+  const { instance } = useMsal();
 
+  const handleLogin = async () => {
+    try {
+      const loginResponse = await instance.loginPopup(loginRequest);
+      if (loginResponse?.account?.username) {
+        const user = await client.post("/User/getUserByEmail", {
+          email: loginResponse.account.username,
+        });
+        if (user.status === 200) {
+          if (user.data) {
+            console.log(user.data);
+            setCookie("RoboLinks", user.data.idUser);
+            router.reload();
+          } else {
+            router.push(
+              {
+                pathname: "/register",
+                query: { email: loginResponse.account.username },
+              },
+              "/register"
+            );
+          }
+        } else {
+          toast({
+            title: "Error.",
+            description: "Something went wrong.",
+            status: "error",
+            duration: 9000,
+            isClosable: true,
+          });
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
   const { data, isLoading, isError } = useQuery(["user"], async () => {
     const { data } = await client.get("/User/getUser?idUser=" + idUser);
     return data;
@@ -49,7 +91,7 @@ export const TopRight = () => {
               <MenuItem
                 onClick={() => {
                   deleteCookie("RoboLinks");
-                  router.push("/login");
+                  router.reload();
                 }}
               >
                 <Text>Sign Out</Text>
@@ -57,12 +99,15 @@ export const TopRight = () => {
             </MenuList>
           ) : (
             <MenuList>
-              <MenuItem
-                onClick={() => {
-                  router.push("/login");
-                }}
-              >
-                <Text>Log In</Text>
+              <MenuItem onClick={handleLogin}>
+                <Image
+                  src="https://cdn-icons-png.flaticon.com/512/732/732221.png"
+                  alt="Microsoft Logo"
+                  boxSize={"22px"}
+                  maxBlockSize={"22px"}
+                  maxInlineSize={"22px"}
+                />
+                <Text m="2%">Sign in or Register. (@tec.mx)</Text>
               </MenuItem>
             </MenuList>
           )}

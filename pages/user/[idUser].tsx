@@ -29,8 +29,6 @@ import { supabase } from "../../supabase";
 
 const validationSchema = Yup.object().shape({
   username: Yup.string().required("Username is required"),
-  password: Yup.string().required("Password is required"),
-  email: Yup.string().email("Email is invalid").required("Email is required"),
 });
 
 const UserPage = () => {
@@ -69,13 +67,10 @@ const UserPage = () => {
           <Formik
             initialValues={{
               username: data?.data?.username,
-              email: data?.data?.email,
-              password: data?.data?.password,
               picUrl: data?.data?.picUrl,
             }}
             onSubmit={async (values) => {
               if (values.picUrl.substring(0, 4) == "data") {
-                const reader = new FileReader();
                 const base64 = await fetch(values.picUrl);
                 const blob = await base64.blob();
                 const supabaseImagesNumber = await supabase.storage
@@ -94,8 +89,6 @@ const UserPage = () => {
               const response = await client.post("/User/validUserUpdate", {
                 idUser: idUser,
                 username: values.username,
-                email: values.email,
-                password: values.password,
                 picUrl: values.picUrl,
               });
               if (response?.status === 200) {
@@ -155,32 +148,6 @@ const UserPage = () => {
                         {errors.username &&
                           touched.username &&
                           errors.username.toString()}
-                      </FormHelperText>
-                    </FormControl>
-                    <FormControl
-                      isInvalid={
-                        Boolean(errors.email) && Boolean(touched.email)
-                      }
-                    >
-                      <FormLabel htmlFor="email">Email</FormLabel>
-                      <Field name="email" as={Input} />
-                      <FormHelperText>
-                        {errors.email &&
-                          touched.email &&
-                          errors.email.toString()}
-                      </FormHelperText>
-                    </FormControl>
-                    <FormControl
-                      isInvalid={
-                        Boolean(errors.password) && Boolean(touched.password)
-                      }
-                    >
-                      <FormLabel htmlFor="password">Password</FormLabel>
-                      <Field name="password" as={Input} />
-                      <FormHelperText>
-                        {errors.password &&
-                          touched.password &&
-                          errors.password.toString()}
                       </FormHelperText>
                     </FormControl>
                   </VStack>

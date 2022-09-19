@@ -19,7 +19,7 @@ import client from "../client";
 import { supabase } from "../supabase";
 import { setCookie } from "cookies-next";
 
-const completeProfile = () => {
+const register = () => {
   const router = useRouter();
   const toast = useToast();
   const email = router.query.email;
@@ -158,4 +158,4 @@ const completeProfile = () => {
   );
 };
 
-export default completeProfile;
+export default register;

@@ -55,10 +55,12 @@ export const TopRight = () => {
             duration: 9000,
             isClosable: true,
           });
+          sessionStorage.removeItem("msal.interaction.status");
         }
       }
     } catch (e) {
       console.error(e);
+      sessionStorage.removeItem("msal.interaction.status");
     }
   };
   const { data, isLoading, isError } = useQuery(["user"], async () => {

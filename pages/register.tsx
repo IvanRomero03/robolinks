@@ -23,10 +23,6 @@ const Register = () => {
   const router = useRouter();
   const toast = useToast();
   const email = router.query.email;
-  //   const [email, setEmail] = useState(router.query.email);
-  //   useEffect(() => {
-  //     setEmail(router.query.email);
-  //   }, [router.query.email]);
 
   const handleRegister = async (values) => {
     const { username, email, picUrl } = values;

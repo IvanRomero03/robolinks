@@ -28,14 +28,15 @@ export const TopRight = () => {
 
   const handleLogin = async () => {
     try {
+      await instance.initialize();
       const loginResponse = await instance.loginPopup(loginRequest);
       if (loginResponse?.account?.username) {
+        instance.setActiveAccount(loginResponse.account);
         const user = await client.post("/User/getUserByEmail", {
           email: loginResponse.account.username,
         });
         if (user.status === 200) {
           if (user.data) {
-            console.log(user.data);
             setCookie("RoboLinks", user.data.idUser);
             router.reload();
           } else {
@@ -55,12 +56,12 @@ export const TopRight = () => {
             duration: 9000,
             isClosable: true,
           });
-          sessionStorage.removeItem("msal.interaction.status");
+          //sessionStorage.removeItem("msal.interaction.status");
         }
       }
     } catch (e) {
       console.error(e);
-      sessionStorage.removeItem("msal.interaction.status");
+      //sessionStorage.removeItem("msal.interaction.status");
     }
   };
   const { data, isLoading, isError } = useQuery(["user"], async () => {

@@ -2,7 +2,7 @@ import { prisma } from "../_db";
 import { NextApiRequest, NextApiResponse } from "next";
 
 const createValidUser = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { username, email, picUrl } = req.body;
+  const { username, email, password, picUrl } = req.body;
 
   const count = await prisma.user.count({
     where: {
@@ -20,6 +20,7 @@ const createValidUser = async (req: NextApiRequest, res: NextApiResponse) => {
     data: {
       username: username,
       email: email,
+      password: password,
       picUrl: picUrl,
     },
     select: {

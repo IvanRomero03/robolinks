@@ -22,6 +22,7 @@ import client from "../../client";
 import VisitsDateHistogram from "../../components/DataVisualization/VisitsByDateHistogram";
 import VisitsHistogram from "../../components/DataVisualization/VisitsHistogram";
 import { TopNavBar } from "../../components/Layout/TopNavBar";
+import { QRCode } from "react-qrcode-logo";
 
 const LinkPage = () => {
   const router = useRouter();
@@ -63,7 +64,7 @@ const LinkPage = () => {
             minW={"400px"}
           />
         </VStack>
-        <VStack align={"left"} m="5%" spacing={4} minW="60%" minH="40%">
+        <VStack align={"left"} m="5%" spacing={4} minW="30%" minH="40%">
           <Heading>{data?.data?.title}</Heading>
           {/** Author info */}
           <HStack>
@@ -105,6 +106,13 @@ const LinkPage = () => {
             ))}
           </HStack>
         </VStack>
+        {isMobile && (
+          <QRCode
+            value={`rbrgs.com/${data?.data?.short}`}
+            size={256}
+            logoImage={"/logo_fondoBlanco_cuadrado.png"}
+          />
+        )}
       </HStack>
       <VStack align={"flex-start"} m="5%" spacing={8}>
         <Heading>Analytics</Heading>

@@ -14,8 +14,12 @@ export const LinkPage = () => {
   );
 
   const getlocation = async () => {
-    const response = await client.get("https://geolocation-db.com/json/");
-    return response;
+    try {
+      const response = await client.get("https://geolocation-db.com/json/");
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {

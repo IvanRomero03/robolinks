@@ -106,11 +106,13 @@ const LinkPage = () => {
             ))}
           </HStack>
         </VStack>
-        <QRCode
-          value={`rbrgs.com/${data?.data?.short}`}
-          size={256}
-          logoImage={"/logo_fondoBlanco_cuadrado.png"}
-        />
+        {isMobile && (
+          <QRCode
+            value={`rbrgs.com/${data?.data?.short}`}
+            size={256}
+            logoImage={"/logo_fondoBlanco_cuadrado.png"}
+          />
+        )}
       </HStack>
       <VStack align={"flex-start"} m="5%" spacing={8}>
         <Heading>Analytics</Heading>

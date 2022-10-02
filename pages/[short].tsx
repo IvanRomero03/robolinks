@@ -2,7 +2,6 @@ import { Spinner } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import useReactIpLocation from "react-ip-details";
 import client from "../client";
 
 export const LinkPage = () => {
@@ -14,20 +13,29 @@ export const LinkPage = () => {
     async () => await client.get(`/Link/getByShort?short=${short}`)
   );
 
-  const { ipResponse, errorMessage } = useReactIpLocation({
-    numberToConvert: 100,
-  });
+  const getlocation = async () => {
+    try {
+      const response = await client.get("https://geolocation-db.com/json/");
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
-    if ((data && ipResponse) || (data && errorMessage)) {
-      const call = client.post("/Visit/createVisit", {
+    const load = async () => {
+      const ipResponse = await getlocation();
+      const call = await client.post("/Visit/createVisit", {
         idLink: data?.data?.idLink,
-        country: ipResponse.country_name,
-        ip: ipResponse.IPv4,
+        country: ipResponse?.data?.country_name,
+        ip: ipResponse?.data?.IPv4,
       });
       window.location.replace(data?.data?.url);
+    };
+    if (data) {
+      load();
     }
-  }, [data, ipResponse]);
+  }, [data]);
 
   useEffect(() => {
     if (isError) {

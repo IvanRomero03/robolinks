@@ -42,7 +42,7 @@ const LinkPage = () => {
   }, [error]);
   return (
     <>
-      <VStack>
+      <VStack minW="100%">
         <TopNavBar />
         <Container
           minW="100%"
@@ -106,7 +106,7 @@ const LinkPage = () => {
             ))}
           </HStack>
         </VStack>
-        {isMobile && (
+        {!isMobile && (
           <QRCode
             value={`rbrgs.com/${data?.data?.short}`}
             size={256}

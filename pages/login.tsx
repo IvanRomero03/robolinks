@@ -28,12 +28,17 @@ const LogInValidationSchema = Yup.object().shape({
 
 const RegisterValidationSchema = Yup.object().shape({
   username: Yup.string().required("Username is required"),
-  email: Yup.string().email("Invalid email").required("Email is required"),
+  //emails ending with @tec.mx are valid
+  email: Yup.string()
+    .email("Invalid email")
+    .matches(/@tec\.mx$/, "Invalid domain")
+    .required("Email is required"),
   password: Yup.string().required("Password is required"),
 });
 
 const isEmail = (email: string) => {
-  const re = /\S+@\S+\.\S+/;
+  //emails ending with @tec.mx are valid
+  const re = /^[\w-\.]+@tec\.mx$/;
   return re.test(email);
 };
 

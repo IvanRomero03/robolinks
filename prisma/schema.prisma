@@ -1,10 +1,12 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider             = "mysql"
+  url                  = env("DATABASE_URL")
+  referentialIntegrity = "prisma"
 }
 
 model Link {
@@ -46,7 +48,7 @@ model User {
   idUser    Int      @id @default(autoincrement())
   username  String   @unique
   email     String   @unique
-  password  String
+  password  String?
   picUrl    String?
   createdAt DateTime @default(now())
   Link      Link[]

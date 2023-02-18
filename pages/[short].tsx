@@ -19,6 +19,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const url = response?.data?.url;
   const idLink = response?.data?.idLink;
   console.log(context?.req?.headers["x-forwarded-for"]);
+  console.log(lookup(context?.req?.headers["x-forwarded-for"]));
   // try {
   //   console.log("antes de geo");
 

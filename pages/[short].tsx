@@ -19,6 +19,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
   const url = response?.data?.url;
   const idLink = response?.data?.idLink;
+  console.log("antes de geo");
   const ip =
     context.req.headers?.["x-forwarded-for"] ||
     context.req.socket.remoteAddress ||

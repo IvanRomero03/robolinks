@@ -3,21 +3,33 @@ import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import client from "../client";
+import { GetServerSideProps } from "next";
+import { lookup } from "geoip-lite";
 
-export async function getServerSideProps(context) {
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  console.log(context.req);
   const short = context.params.short;
   String(short).replaceAll("%20", " ");
   const response = await client.get(`/Link/getByShort?short=${short}`);
-  const url = response?.data?.url;
-  const idLink = response?.data?.idLink;
-  const GeoResponse = await client.get("https://geolocation-db.com/json/");
-  console.log(GeoResponse.data);
   if (response.data.error != null) {
     console.log("error");
     return {
       notFound: true,
     };
   }
+  const url = response?.data?.url;
+  const idLink = response?.data?.idLink;
+  const ip =
+    context.req.headers?.["x-forwarded-for"] ||
+    context.req.socket.remoteAddress ||
+    null;
+  const geo = lookup(ip);
+  console.log("GeoInfo", geo);
+  const call = await client.post("/Visit/createVisit", {
+    idLink: idLink,
+    country: geo?.country || "Unknown",
+    ip: ip,
+  });
   return {
     props: {
       linkUrl: url,
@@ -25,7 +37,7 @@ export async function getServerSideProps(context) {
       test: "test",
     },
   };
-}
+};
 
 export const LinkPage = ({
   linkUrl,

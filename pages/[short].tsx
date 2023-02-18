@@ -4,14 +4,47 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import client from "../client";
 
-export const LinkPage = () => {
-  const router = useRouter();
-  const { short } = router.query;
+export async function getServerSideProps(context) {
+  const short = context.params.short;
   String(short).replaceAll("%20", " ");
-  const { data, isLoading, isError } = useQuery(
-    ["linkName", short],
-    async () => await client.get(`/Link/getByShort?short=${short}`)
-  );
+  const response = await client.get(`/Link/getByShort?short=${short}`);
+  const url = response?.data?.url;
+  const idLink = response?.data?.idLink;
+  const GeoResponse = await client.get("https://geolocation-db.com/json/");
+  console.log(GeoResponse.data);
+  if (response.data.error != null) {
+    console.log("error");
+    return {
+      notFound: true,
+    };
+  }
+  return {
+    props: {
+      linkUrl: url,
+      idLink: idLink,
+      test: "test",
+    },
+  };
+}
+
+export const LinkPage = ({
+  linkUrl,
+  idLink,
+  test,
+}: {
+  linkUrl: string;
+  idLink: number;
+  error: boolean;
+  test: string;
+}) => {
+  const router = useRouter();
+  // const { short } = router.query;
+  // String(short).replaceAll("%20", " ");
+  // const { data, isLoading, isError } = useQuery(
+  //   ["linkName", short],
+  //   async () => await client.get(`/Link/getByShort?short=${short}`)
+  // );
+  console.log(test);
 
   const getlocation = async () => {
     try {
@@ -26,22 +59,16 @@ export const LinkPage = () => {
     const load = async () => {
       const ipResponse = await getlocation();
       const call = await client.post("/Visit/createVisit", {
-        idLink: data?.data?.idLink,
+        idLink: idLink,
         country: ipResponse?.data?.country_name,
         ip: ipResponse?.data?.IPv4,
       });
-      window.location.replace(data?.data?.url);
+      window.location.replace(linkUrl);
     };
-    if (data) {
+    if (idLink && linkUrl) {
       load();
     }
-  }, [data]);
-
-  useEffect(() => {
-    if (isError) {
-      router.push("/404/404");
-    }
-  }, [isError]);
+  }, []);
 
   return <Spinner />;
 };

@@ -18,7 +18,24 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
   const url = response?.data?.url;
   const idLink = response?.data?.idLink;
+  console.log(context?.req?.headers["x-forwarded-for"]);
+  // try {
+  //   console.log("antes de geo");
 
+  //   const ip =
+  //     context?.req?.headers["x-forwarded-for"] ||
+  //     context?.req?.socket?.remoteAddress ||
+  //     null;
+  //   const geo = lookup(ip);
+  //   console.log("GeoInfo", geo);
+  //   const call = await client.post("/Visit/createVisit", {
+  //     idLink: idLink,
+  //     country: geo?.country || "Unknown",
+  //     ip: ip,
+  //   });
+  // } catch (error) {
+  //   console.log(error);
+  // }
   return {
     props: {
       linkUrl: url,

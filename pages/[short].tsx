@@ -4,12 +4,26 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import client from "../client";
 import { GetServerSideProps } from "next";
-import { lookup } from "geoip-lite";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const short = context.params.short;
   String(short).replaceAll("%20", " ");
   const response = await client.get(`/Link/getByShort?short=${short}`);
+  console.log(context?.req?.headers?.["x-forwarded-for"]);
+  console.log(context?.req?.socket?.remoteAddress);
+  console.log(
+    context?.req?.headers?.["x-forwarded-for"] ||
+      context?.req?.socket?.remoteAddress
+  );
+  const ip =
+    context?.req?.headers?.["x-forwarded-for"] ||
+    context?.req?.socket?.remoteAddress;
+  const FakeIP = "10.22.224.106";
+  const ipInfoResponse = await client.post("/Visit/createVisit", {
+    ip: FakeIP,
+    idLink: 1,
+  });
+  console.log(ipInfoResponse.status);
   if (response.data.error != null) {
     console.log("error");
     return {
@@ -18,8 +32,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
   const url = response?.data?.url;
   const idLink = response?.data?.idLink;
-  console.log(context?.req?.headers["x-forwarded-for"]);
-  console.log(lookup(context?.req?.headers["x-forwarded-for"]));
   // try {
   //   console.log("antes de geo");
 

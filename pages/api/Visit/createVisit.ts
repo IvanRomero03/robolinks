@@ -1,8 +1,12 @@
 import { prisma } from "../_db";
 import { NextApiRequest, NextApiResponse } from "next";
+import * as ipfetch from "ipfetch";
 
 const createVisit = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { idLink, country, ip } = req.body;
+  const { idLink, ip } = req.body;
+
+  const country = await ipInfo.getIPInfo(ip);
+  console.log("hola");
 
   if (!idLink) {
     res.status(400).json({ error: "Missing parameters" });

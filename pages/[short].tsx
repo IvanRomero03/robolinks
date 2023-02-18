@@ -7,7 +7,6 @@ import { GetServerSideProps } from "next";
 import { lookup } from "geoip-lite";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  console.log(context.req);
   const short = context.params.short;
   String(short).replaceAll("%20", " ");
   const response = await client.get(`/Link/getByShort?short=${short}`);
@@ -21,8 +20,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const idLink = response?.data?.idLink;
   console.log("antes de geo");
   const ip =
-    context.req.headers["x-forwarded-for"] ||
-    context.req.socket.remoteAddress ||
+    context?.req?.headers["x-forwarded-for"] ||
+    context?.req?.socket?.remoteAddress ||
     null;
   const geo = lookup(ip);
   console.log("GeoInfo", geo);

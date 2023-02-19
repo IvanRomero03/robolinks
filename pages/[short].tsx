@@ -30,57 +30,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       destination: url,
       permanent: true,
     },
-    // props: {
-    //   linkUrl: url,
-    //   idLink: idLink,
-    //   test: "test",
-    // },
   };
 };
 
-export const LinkPage = ({
-  linkUrl,
-  idLink,
-  test,
-}: {
-  linkUrl: string;
-  idLink: number;
-  error: boolean;
-  test: string;
-}) => {
-  const router = useRouter();
-  // const { short } = router.query;
-  // String(short).replaceAll("%20", " ");
-  // const { data, isLoading, isError } = useQuery(
-  //   ["linkName", short],
-  //   async () => await client.get(`/Link/getByShort?short=${short}`)
-  // );
-  console.log(test);
-
-  const getlocation = async () => {
-    try {
-      const response = await client.get("https://geolocation-db.com/json/");
-      return response;
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    const load = async () => {
-      const ipResponse = await getlocation();
-      const call = await client.post("/Visit/createVisit", {
-        idLink: idLink,
-        country: ipResponse?.data?.country_name,
-        ip: ipResponse?.data?.IPv4,
-      });
-      window.location.replace(linkUrl);
-    };
-    if (idLink && linkUrl) {
-      load();
-    }
-  }, []);
-
+export const LinkPage = () => {
   return <Spinner />;
 };
 

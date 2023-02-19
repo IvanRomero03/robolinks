@@ -9,52 +9,32 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const short = context.params.short;
   String(short).replaceAll("%20", " ");
   const response = await client.get(`/Link/getByShort?short=${short}`);
-  console.log(context?.req?.headers?.["x-forwarded-for"]);
-  console.log(context?.req?.socket?.remoteAddress);
-  console.log(
-    context?.req?.headers?.["x-forwarded-for"] ||
-      context?.req?.socket?.remoteAddress
-  );
-  const ip =
-    context?.req?.headers?.["x-forwarded-for"] ||
-    context?.req?.socket?.remoteAddress;
-  const FakeIP = "10.22.224.106";
-  const ipInfoResponse = await client.post("/Visit/createVisit", {
-    ip: FakeIP,
-    idLink: 1,
-  });
-  console.log(ipInfoResponse.status);
   if (response.data.error != null) {
     console.log("error");
     return {
       notFound: true,
     };
   }
+  const ip =
+    context?.req?.headers?.["x-forwarded-for"] ||
+    context?.req?.socket?.remoteAddress ||
+    null;
   const url = response?.data?.url;
   const idLink = response?.data?.idLink;
-  // try {
-  //   console.log("antes de geo");
-
-  //   const ip =
-  //     context?.req?.headers["x-forwarded-for"] ||
-  //     context?.req?.socket?.remoteAddress ||
-  //     null;
-  //   const geo = lookup(ip);
-  //   console.log("GeoInfo", geo);
-  //   const call = await client.post("/Visit/createVisit", {
-  //     idLink: idLink,
-  //     country: geo?.country || "Unknown",
-  //     ip: ip,
-  //   });
-  // } catch (error) {
-  //   console.log(error);
-  // }
+  await client.post("/Visit/createVisit", {
+    ip: ip,
+    idLink: idLink,
+  });
   return {
-    props: {
-      linkUrl: url,
-      idLink: idLink,
-      test: "test",
+    redirect: {
+      destination: url,
+      permanent: true,
     },
+    // props: {
+    //   linkUrl: url,
+    //   idLink: idLink,
+    //   test: "test",
+    // },
   };
 };
 

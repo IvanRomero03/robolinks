@@ -1,13 +1,20 @@
 import { prisma } from "../_db";
 import { NextApiRequest, NextApiResponse } from "next";
-import * as ipfetch from "ipfetch";
+import client from "../../../client";
 
 const createVisit = async (req: NextApiRequest, res: NextApiResponse) => {
   const { idLink, ip } = req.body;
 
-  const country = await ipInfo.getIPInfo(ip);
-  console.log("hola");
+  const { data } = await client.post("https://www.iplocation.net/get-ipdata", {
+    body: {
+      ip: ip,
+      source: "ipinfo",
+      ipv: "4",
+    },
+  });
 
+  console.log("hola", data);
+  console.log(data?.res?.region);
   if (!idLink) {
     res.status(400).json({ error: "Missing parameters" });
     return;
@@ -15,7 +22,7 @@ const createVisit = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const visit = await prisma.visit.create({
     data: {
-      country: country,
+      country: data?.res?.region,
       ip: ip,
       Link: {
         connect: {

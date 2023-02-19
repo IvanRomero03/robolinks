@@ -6,11 +6,9 @@ const createVisit = async (req: NextApiRequest, res: NextApiResponse) => {
   const { idLink, ip } = req.body;
 
   const { data } = await client.post("https://www.iplocation.net/get-ipdata", {
-    body: {
-      ip: ip,
-      source: "ipinfo",
-      ipv: "4",
-    },
+    ip: ip,
+    source: "ipinfo",
+    ipv: "4",
   });
 
   console.log("hola", data);

@@ -4,12 +4,7 @@ import client from "../../../client";
 
 const createVisit = async (req: NextApiRequest, res: NextApiResponse) => {
   const { idLink, ip } = req.body;
-
-  const { data } = await client.post("https://www.iplocation.net/get-ipdata", {
-    ip: ip,
-    source: "ipinfo",
-    ipv: "4",
-  });
+  const { data } = await client.get("https://geolocation-db.com/json/" + ip);
 
   console.log("hola", data);
   console.log(data?.res?.region);

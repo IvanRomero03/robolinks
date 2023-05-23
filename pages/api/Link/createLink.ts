@@ -3,15 +3,16 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { Prisma } from "@prisma/client";
 
 const createLink = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { idUser, title, description, url, picUrl, tags } = req.body;
-  if (!idUser || !title || !url) {
+  const { idUser, title, description, url, picUrl, tags, short } = req.body;
+  if (!idUser || !title || !url || !short) {
     return res.status(400).json({ message: "Missing required fields" });
   }
 
   const newLink: Prisma.LinkCreateInput = {
     title: title,
     description: description,
-    url: url,
+    short: short,
+    url: url as string,
     picUrl: picUrl ?? "https://cdn-icons-png.flaticon.com/512/3541/3541854.png",
     updatedAt: new Date(),
     User: {
@@ -34,7 +35,6 @@ const createLink = async (req: NextApiRequest, res: NextApiResponse) => {
         idTag: tag,
       })),
     });
-    console.log(newLinkTags);
   }
 
   return res.status(200).json(link);

@@ -1,34 +1,40 @@
-import {
-  Flex,
-  Box,
-  Container,
-  Button,
-  Image,
-  Code,
-  Text,
-  Heading,
-  VStack,
-  Link,
-  HStack,
-} from "@chakra-ui/react";
+import { Flex, Heading, HStack, Image, useColorMode } from "@chakra-ui/react";
+import Head from "next/head";
 import { useRouter } from "next/router";
-import React, { useState, useEffect } from "react";
 import { TopRight } from "./TopRight";
-import { theme } from "../../styles/theme";
-import { useColorMode } from "@chakra-ui/react";
 
-type props = {
-  picUrl?: string;
-  idUser?: string;
-};
-
-export const TopNavBar = ({ picUrl = "", idUser }: props) => {
+export const TopNavBar = () => {
   const router = useRouter();
   const { colorMode } = useColorMode();
 
   return (
     <>
-      <Flex
+      {/* <Head>
+        <title>RoboLinks</title>
+        <meta
+          name="description"
+          content="Link shortener and administrator for RoBorregos"
+          property="description"
+        />
+        <meta
+          name="keywords"
+          content="Links Shortener RoBorregos RoboLinks"
+          property="keywTopRightords"
+        />
+        <meta name="author" content="RoBorregos" property="author" />
+        <meta name="image" content="./favicon.ico" property="image" />
+        <link rel="icon" href="./favicon.ico" />
+      </Head> */}
+      <div className="flex fixed w-screen align-middle items-center p-4 justify-between text-white bg-gray-800">
+        <img className="alt-logo max-h-12 min-h-12 min-w-12 opacity-150 cursor-pointer"
+          src="https://bfmvwivyerrefrhrlmxx.supabase.co/storage/v1/object/public/imagenes/Logo_blanco.png" />
+        <div className="text-4xl font-bold">
+          <p>RoboLinks</p>
+        </div>
+        <TopRight />
+      </div>
+      
+      {/* <Flex
         minW="100%"
         align={"center"}
         wrap="wrap"
@@ -57,9 +63,9 @@ export const TopNavBar = ({ picUrl = "", idUser }: props) => {
           <Heading opacity={1} color={"white"}>
             RoboLinks
           </Heading>
-          <TopRight picUrl={picUrl} idUser={idUser} />
+          <TopRight />
         </HStack>
-      </Flex>
+      </Flex> */}
     </>
   );
 };

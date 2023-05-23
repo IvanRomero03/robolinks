@@ -1,48 +1,44 @@
+import { AddIcon, CheckIcon, CloseIcon } from "@chakra-ui/icons";
 import {
-  ModalContent,
-  ModalBody,
-  ModalHeader,
-  ModalFooter,
-  Input,
-  Button,
-  Heading,
-  IconButton,
-  Spacer,
-  HStack,
-  VStack,
-  Image,
-  Code,
-  Textarea,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
   Badge,
-  Text,
+  Button,
   Center,
+  Code,
+  Flex,
   FormControl,
   FormHelperText,
+  Heading,
+  HStack,
+  IconButton,
+  Image,
+  Input,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  ModalBody,
+  ModalContent,
   Popover,
-  PopoverTrigger,
-  Portal,
-  PopoverContent,
   PopoverBody,
-  PopoverHeader,
   PopoverCloseButton,
+  PopoverContent,
+  PopoverHeader,
+  PopoverTrigger,
+  Spacer,
+  Text,
+  Textarea,
   useDisclosure,
   useToast,
-  Container,
-  Flex,
+  VStack,
 } from "@chakra-ui/react";
-import { Form, Formik, Field, yupToFormErrors } from "formik";
-import * as Yup from "yup";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import client from "../../client";
-import { AddIcon, CheckIcon, CloseIcon } from "@chakra-ui/icons";
-import { useEffect, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
-import CreateTag from "./CreateTag";
+import { useQuery } from "@tanstack/react-query";
+import { Field, Form, Formik } from "formik";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import * as Yup from "yup";
+import client from "../../client";
+import CreateTag from "./CreateTag";
 
 type props = {
   idLink?: number;
@@ -70,7 +66,14 @@ const EditForm = ({ idLink, onClose, onSubmit, idUser }: props) => {
     title: Yup.string()
       .min(2, "Too Short!")
       .max(50, "Too Long!")
-      .required("Required"),
+      .required("Required")
+      .matches(/^[a-zA-Z0-9 ]*$/, "Only alphanumeric characters and spaces"),
+    short: Yup.string()
+      .min(2, "Too Short!")
+      .max(50, "Too Long!")
+      .required("Required")
+      // only alphanumeric characters and spaces
+      .matches(/^[a-zA-Z0-9 ]*$/, "Only alphanumeric characters and spaces"),
     url: Yup.string().url("Invalid url").required("Required"),
     description: Yup.string().max(500, "Too Long!"), //change required here and in the backend
   });
@@ -91,21 +94,23 @@ const EditForm = ({ idLink, onClose, onSubmit, idUser }: props) => {
                   ? data?.data
                   : {
                       title: "",
+                      short: "",
                       url: "",
                       picUrl:
                         "https://cdn-icons-png.flaticon.com/512/3541/3541854.png",
                       description: "",
+                      changable: true,
                     }
               }
               validationSchema={validationSchema}
               onSubmit={async (values, { setSubmitting }) => {
-                const validTitle = await client.post("/Link/validateTitle", {
-                  title: values.title,
+                const validShort = await client.post("/Link/validateShort", {
+                  short: values.short,
                   idLink: idLink ?? null,
                 });
-                if (!validTitle?.data) {
+                if (!validShort?.data) {
                   toast({
-                    title: "Title already exists",
+                    title: "Short already exists",
                     position: "top",
                     status: "error",
                     isClosable: true,
@@ -197,6 +202,12 @@ const EditForm = ({ idLink, onClose, onSubmit, idUser }: props) => {
                             name="title"
                             as={Input}
                             placeholder="Title"
+                            onChange={(e) => {
+                              setFieldValue("title", e.target.value);
+                              if (values.changable) {
+                                setFieldValue("short", e.target.value);
+                              }
+                            }}
                             required
                           />
                           <FormHelperText>
@@ -205,12 +216,36 @@ const EditForm = ({ idLink, onClose, onSubmit, idUser }: props) => {
                               errors?.title.toString()}
                           </FormHelperText>
                         </FormControl>
-                        {values?.title && (
+                        <FormControl
+                          isInvalid={Boolean(!!errors.short && touched.short)}
+                        >
+                          <Field
+                            name="short"
+                            as={Input}
+                            placeholder="Short"
+                            onChange={(e) => {
+                              setFieldValue("short", e.target.value);
+                              if (e.target.value.length == 0) {
+                                setFieldValue("changable", true);
+                              } else {
+                                setFieldValue("changable", false);
+                              }
+                            }}
+                            required
+                          />
+                          <FormHelperText>
+                            {errors.short &&
+                              touched.short &&
+                              errors?.short.toString()}
+                          </FormHelperText>
+                        </FormControl>
+                        {values?.short && (
                           <Code fontSize="md">
-                            robo-links.vercel.app/
-                            {values?.title.replaceAll(" ", "%20")}
+                            rbrgs.com/
+                            {values?.short.replaceAll(" ", "%20")}
                           </Code>
                         )}
+
                         <Code>
                           <Heading size="md">Url</Heading>
                         </Code>
@@ -241,7 +276,6 @@ const EditForm = ({ idLink, onClose, onSubmit, idUser }: props) => {
                             name="description"
                             as={Textarea}
                             placeholder="Description"
-                            required
                           />
                           <FormHelperText>
                             {errors.description &&

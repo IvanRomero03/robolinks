@@ -1,33 +1,11 @@
-import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
-import {
-  Badge,
-  Box,
-  Button,
-  Center,
-  Container,
-  HStack,
-  Input,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  Spacer,
-  Spinner,
-  Stack,
-  Text,
-  VStack,
-} from "@chakra-ui/react";
-import { useQuery } from "@tanstack/react-query";
+import { Container, Text, VisuallyHidden, VStack } from "@chakra-ui/react";
+import { getCookie, hasCookie } from "cookies-next";
+import Link from "next/link";
 import { useEffect, useState } from "react";
+import { isMobile } from "react-device-detect";
 import { TopNavBar } from "../components/Layout/TopNavBar";
-import { LinkComponent } from "../components/Link/LinkComponent";
-import { useQueryClient, useMutation } from "@tanstack/react-query";
 import LinkStack from "../components/Link/linkStack";
 import SearchBar from "../components/Searcher/SearchBar";
-import { Prisma } from "@prisma/client";
-import { isMobile } from "react-device-detect";
-import { getCookie, hasCookie } from "cookies-next";
-import client from "../client";
 // idea https://excalidraw.com/#json=myQ7PbofUoi1ufoU6SZ65,jLB2YW1xcTTW4qktRK4V1w
 
 export default function Home() {
@@ -37,22 +15,22 @@ export default function Home() {
   useEffect(() => {
     if (hasCookie("RoboLinks")) {
       const cookies = getCookie("RoboLinks");
-      console.log(cookies);
       setIdUser(cookies);
     }
   }, []);
 
-  const { data, isLoading, isError } = useQuery(["user"], async () => {
-    const { data } = await client.get("/User/getUser?idUser=" + idUser);
-    return data;
-  });
-
-  console.log(idUser);
-
   return (
     <>
+      <VisuallyHidden>
+        RoboLinks is a RoBorregos internal tool to share and manage links and
+        resources.
+        <Text>
+          Check out our website at{" "}
+          <Link href="https://roborregos.com">roborregos.com</Link>
+        </Text>
+      </VisuallyHidden>
       <VStack>
-        <TopNavBar picUrl={data?.picUrl} idUser={idUser} />
+        <TopNavBar />
         <Container
           minW="100%"
           padding={isMobile ? "3.5rem" : "3rem"}
@@ -70,9 +48,6 @@ export default function Home() {
         />
       </VStack>
       <LinkStack search={search} tags={tags} idUser={idUser} />
-      <VStack m="2%">
-        <HStack></HStack>
-      </VStack>
     </>
   );
 }

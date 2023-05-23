@@ -1,27 +1,24 @@
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import { useRouter } from "next/router";
-import client from "../client";
 import {
-  Input,
+  Avatar,
   Button,
-  Text,
-  Box,
-  useToast,
-  FormControl,
-  FormErrorMessage,
-  VStack,
   Container,
   Flex,
-  HStack,
-  Image,
+  FormControl,
+  FormErrorMessage,
   FormLabel,
-  Avatar,
+  HStack,
+  Input,
+  Text,
+  useToast,
+  VStack,
 } from "@chakra-ui/react";
-import { useState } from "react";
 import { setCookie } from "cookies-next";
-import { TopNavBar } from "../components/Layout/TopNavBar";
+import { ErrorMessage, Field, Form, Formik } from "formik";
+import { useRouter } from "next/router";
 import { isMobile } from "react-device-detect";
+import * as Yup from "yup";
+import client from "../client";
+import { TopNavBar } from "../components/Layout/TopNavBar";
 import { supabase } from "../supabase";
 
 const LogInValidationSchema = Yup.object().shape({
@@ -31,12 +28,17 @@ const LogInValidationSchema = Yup.object().shape({
 
 const RegisterValidationSchema = Yup.object().shape({
   username: Yup.string().required("Username is required"),
-  email: Yup.string().email("Invalid email").required("Email is required"),
+  //emails ending with @tec.mx are valid
+  email: Yup.string()
+    .email("Invalid email")
+    .matches(/@tec\.mx$/, "Invalid domain")
+    .required("Email is required"),
   password: Yup.string().required("Password is required"),
 });
 
 const isEmail = (email: string) => {
-  const re = /\S+@\S+\.\S+/;
+  //emails ending with @tec.mx are valid
+  const re = /^[\w-\.]+@tec\.mx$/;
   return re.test(email);
 };
 
@@ -45,7 +47,6 @@ const LogIn = () => {
   const router = useRouter();
   const handleCreateAccount = async (values) => {
     const { username, email, password, picUrl } = values;
-    console.log("here");
     if (values.picUrl.substring(0, 4) == "data") {
       const reader = new FileReader();
       const base64 = await fetch(values.picUrl);
@@ -63,14 +64,12 @@ const LogIn = () => {
         num +
         ".png";
     }
-    console.log("here");
     const response = await client.post("/User/createValidUser", {
       username: username,
       email: email,
       password: password,
       picUrl: picUrl,
     });
-    console.log("here");
     if (response.status === 200) {
       toast({
         title: "Account created.",
@@ -88,11 +87,8 @@ const LogIn = () => {
         isClosable: true,
       });
     }
-    console.log("here");
-    console.log(values);
   };
   const handleLogIn = async (values) => {
-    console.log(values);
     if (isEmail(values.usernameOrEmail)) {
       const response = await client.post("/User/validateLogInEmail", {
         email: values.usernameOrEmail,

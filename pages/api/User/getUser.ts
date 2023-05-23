@@ -3,7 +3,6 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 const getUser = async (req: NextApiRequest, res: NextApiResponse) => {
   const { idUser } = req.query;
-  console.log(idUser);
   if (!idUser || idUser === "null") {
     res
       .status(400)

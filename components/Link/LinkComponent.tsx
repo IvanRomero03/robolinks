@@ -1,31 +1,36 @@
 import { CopyIcon, EditIcon } from "@chakra-ui/icons";
 import {
+  Badge,
   Box,
   Heading,
-  Text,
-  VStack,
   HStack,
-  Image,
-  Code,
-  Badge,
-  Button,
-  Link,
-  Spacer,
   IconButton,
-  Spinner,
+  Image,
+  Link,
   Modal,
+  Spacer,
+  Spinner,
+  Text,
   useDisclosure,
+  VStack,
 } from "@chakra-ui/react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import client from "../../client";
 import EditForm from "./EditForm";
+import { useState, useEffect, useRef } from "react";
 
 export const LinkComponent = ({ idLink, idUser }) => {
   const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { data, isLoading, isError } = useQuery(["link" + idLink], () =>
-    client.get(`Link/getLink?idLink=${idLink}`)
+  // fetch if on screen
+  const ref = useRef();
+  const onScreen = useOnScreen(ref);
+
+  const { data, isLoading, isError } = useQuery(
+    ["link" + idLink],
+    () => client.get(`Link/getLink?idLink=${idLink}`),
+    { enabled: onScreen }
   );
   const queryClient = useQueryClient();
   const { mutate } = useMutation(
@@ -63,10 +68,19 @@ export const LinkComponent = ({ idLink, idUser }) => {
         overflow={"hidden"}
         borderWidth={2}
         dropShadow={"md"}
+        ref={ref}
       >
         <Box m="2%">
           {isLoading ? (
-            <Spinner />
+            <Box
+              w="full"
+              h="100px"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Spinner />
+            </Box>
           ) : isError ? (
             <Text>Error</Text>
           ) : (
@@ -93,8 +107,8 @@ export const LinkComponent = ({ idLink, idUser }) => {
                   </Link>
                   <Link href={data?.data?.url} isExternal w="110%">
                     <Text noOfLines={1}>
-                      robo-links.vercel.app/
-                      {data?.data?.title.replaceAll(" ", "%20")}
+                      rbrgs.com/
+                      {data?.data?.short.replaceAll(" ", "%20")}
                     </Text>
                   </Link>
                 </VStack>
@@ -117,10 +131,7 @@ export const LinkComponent = ({ idLink, idUser }) => {
                     icon={<CopyIcon />}
                     onClick={() => {
                       navigator.clipboard.writeText(
-                        `robo-links.vercel.app/${data?.data?.title?.replaceAll(
-                          " ",
-                          "%20"
-                        )}`
+                        `rbrgs.com/${data?.data?.short?.replaceAll(" ", "%20")}`
                       );
                     }}
                     variant="outline"
@@ -142,4 +153,22 @@ export const LinkComponent = ({ idLink, idUser }) => {
       </Box>
     </>
   );
+};
+
+const useOnScreen = (ref) => {
+  const [isIntersecting, setIntersecting] = useState(false);
+
+  const observer = new IntersectionObserver(([entry]) =>
+    setIntersecting(entry.isIntersecting)
+  );
+
+  useEffect(() => {
+    observer.observe(ref.current);
+    // Remove the observer as soon as the component is unmounted
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
+  return isIntersecting;
 };

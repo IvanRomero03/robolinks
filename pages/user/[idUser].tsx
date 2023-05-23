@@ -1,33 +1,30 @@
-import {
-  Input,
-  Text,
-  Code,
-  Box,
-  HStack,
-  Button,
-  IconButton,
-  Badge,
-  VStack,
-  Avatar,
-  Container,
-  Spinner,
-  FormControl,
-  FormLabel,
-  useToast,
-  FormHelperText,
-  Center,
-} from "@chakra-ui/react";
-import client from "../../client";
-import { useQuery } from "@tanstack/react-query";
-import { useRouter } from "next/router";
-import { TopNavBar } from "../../components/Layout/TopNavBar";
-import { isMobile } from "react-device-detect";
 import { EditIcon } from "@chakra-ui/icons";
-import { LinkComponent } from "../../components/Link/LinkComponent";
-import { hasCookie, getCookie } from "cookies-next";
+import {
+  Avatar,
+  Button,
+  Center,
+  Container,
+  FormControl,
+  FormHelperText,
+  FormLabel,
+  HStack,
+  IconButton,
+  Input,
+  Spinner,
+  Text,
+  useToast,
+  VStack,
+} from "@chakra-ui/react";
+import { useQuery } from "@tanstack/react-query";
+import { getCookie, hasCookie } from "cookies-next";
+import { Field, Form, Formik } from "formik";
+import { useRouter } from "next/router";
 import { useState } from "react";
-import { Formik, Form, Field } from "formik";
+import { isMobile } from "react-device-detect";
 import * as Yup from "yup";
+import client from "../../client";
+import { TopNavBar } from "../../components/Layout/TopNavBar";
+import { LinkComponent } from "../../components/Link/LinkComponent";
 import { supabase } from "../../supabase";
 
 const validationSchema = Yup.object().shape({
@@ -58,7 +55,7 @@ const UserPage = () => {
   return (
     <>
       <VStack>
-        <TopNavBar picUrl={data?.data?.picUrl} idUser={data?.data?.idUser} />
+        <TopNavBar />
         <Container
           minW="100%"
           padding={isMobile ? "3.5rem" : "3rem"}

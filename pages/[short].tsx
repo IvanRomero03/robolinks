@@ -21,7 +21,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     null;
   const url = response?.data?.url;
   const idLink = response?.data?.idLink;
-  await client.post("/Visit/createVisit", {
+  void client.post("/Visit/createVisit", {
     ip: ip,
     idLink: idLink,
   });

@@ -15,7 +15,9 @@ export default function Home() {
   useEffect(() => {
     if (hasCookie("RoboLinks")) {
       const cookies = getCookie("RoboLinks");
-      setIdUser(cookies);
+      if (cookies != null) {
+        setIdUser(cookies);
+      }
     }
   }, []);
 
